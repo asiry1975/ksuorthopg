@@ -5,6 +5,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import ResidentHome from "./pages/Resident/ResidentHome";
+import ResidentScheduleForm from "./pages/Resident/ResidentScheduleForm";
+import ResidentView from "./pages/Resident/ResidentView";
+import FacultyHome from "./pages/Faculty/FacultyHome";
+import FacultyView from "./pages/Faculty/FacultyView";
+import ProgramDirectorHome from "./pages/ProgramDirector/ProgramDirectorHome";
+import ComingSoonPage from "./pages/ComingSoon";
+import { ScheduleProvider } from "./context/ScheduleContext";
 
 const queryClient = new QueryClient();
 
@@ -14,11 +22,24 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <ScheduleProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+
+            <Route path="/resident" element={<ResidentHome />} />
+            <Route path="/resident/schedule" element={<ResidentScheduleForm />} />
+            <Route path="/resident/view" element={<ResidentView />} />
+
+            <Route path="/faculty" element={<FacultyHome />} />
+            <Route path="/faculty/view" element={<FacultyView />} />
+
+            <Route path="/program-director" element={<ProgramDirectorHome />} />
+
+            <Route path="/coming-soon" element={<ComingSoonPage />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ScheduleProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
