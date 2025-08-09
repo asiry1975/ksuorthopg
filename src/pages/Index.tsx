@@ -25,7 +25,7 @@ const Index = () => {
               <UserSquare2 className="h-6 w-6" />
               <div>
                 <h2 className="text-lg font-semibold">Faculty</h2>
-                <p className="text-xs text-muted-foreground">Schedule results</p>
+                <p className="text-xs text-muted-foreground">Schedule Veiw</p>
               </div>
             </div>
           </Link>
