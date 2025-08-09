@@ -12,7 +12,7 @@ import { Menu } from "lucide-react";
 
 export default function GlobalQuickLinks() {
   return (
-    <div className="fixed top-3 left-3 z-50">
+    <div className="relative z-30">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon" aria-label="Open quick links">
@@ -20,7 +20,7 @@ export default function GlobalQuickLinks() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          align="end"
+          align="start"
           sideOffset={8}
           className="z-50 bg-popover text-popover-foreground border border-border shadow-lg"
         >

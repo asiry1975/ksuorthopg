@@ -14,7 +14,7 @@ import ProgramDirectorHome from "./pages/ProgramDirector/ProgramDirectorHome";
 import ComingSoonPage from "./pages/ComingSoon";
 import { ScheduleProvider } from "./context/ScheduleContext";
 import AppFooter from "./components/AppFooter";
-import GlobalQuickLinks from "./components/GlobalQuickLinks";
+
 
 const queryClient = new QueryClient();
 
@@ -42,7 +42,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <GlobalQuickLinks />
+            
             <AppFooter />
           </div>
           {/* Global background image */}
