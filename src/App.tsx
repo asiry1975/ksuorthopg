@@ -13,6 +13,7 @@ import FacultyView from "./pages/Faculty/FacultyView";
 import ProgramDirectorHome from "./pages/ProgramDirector/ProgramDirectorHome";
 import ComingSoonPage from "./pages/ComingSoon";
 import { ScheduleProvider } from "./context/ScheduleContext";
+import AppFooter from "./components/AppFooter";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <AppFooter />
           </div>
           {/* Global background image */}
           <div aria-hidden="true" className="fixed inset-0 bg-[url('/lovable-uploads/a40df1ae-56a6-461a-8377-4c41dd0fd784.png')] bg-cover bg-center pointer-events-none opacity-[0.99] z-0" />
