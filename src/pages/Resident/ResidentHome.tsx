@@ -31,7 +31,7 @@ export default function ResidentHome() {
           ))}
         </div>
       </main>
-      <div aria-hidden="true" className="fixed inset-0 bg-[url('/lovable-uploads/ba2a01be-906d-4353-8786-be50ca9e1525.png')] bg-cover bg-center pointer-events-none opacity-95 -z-10" />
+      <div aria-hidden="true" className="fixed inset-0 bg-[url('/lovable-uploads/ba2a01be-906d-4353-8786-be50ca9e1525.png')] bg-cover bg-center pointer-events-none opacity-5 -z-10" />
     </div>
   );
 }
