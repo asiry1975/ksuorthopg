@@ -5,7 +5,7 @@ const Index = () => {
   return <div className="min-h-screen relative">
       <AppHeader title="Home" />
       <header className="pt-8 pb-6 text-center">
-        <h1 className="text-2xl font-bold">KSU Orthodontic Graduate Programs -  Faculty &amp; Residents Portal </h1>
+        <h1 className="text-2xl font-bold text-primary-foreground">KSU Orthodontic Graduate Programs -  Faculty &amp; Residents Portal </h1>
         <p className="text-sm text-muted-foreground mt-2">Your centralized hub for clinical schedules, academic tools, and communication between faculty and residents</p>
       </header>
       <main className="container mx-auto p-4">
