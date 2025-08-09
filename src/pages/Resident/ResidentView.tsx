@@ -136,10 +136,10 @@ export default function ResidentView() {
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-1 text-foreground">
-              <p><span className="font-medium">Patient:</span> {arrivalEntry?.patientName}</p>
+              <p><span className="font-medium">Instructor:</span> {arrivalEntry?.facultyName}</p>
               <p><span className="font-medium">Resident:</span> {arrivalEntry?.residentName}</p>
               <p><span className="font-medium">Clinic number:</span> {arrivalEntry?.clinicNumber}</p>
-              <p><span className="font-medium">Instructor:</span> {arrivalEntry?.facultyName}</p>
+              <p><span className="font-medium">Patient:</span> {arrivalEntry?.patientName}</p>
             </div>
             <DialogFooter className="mt-4">
               <DialogClose asChild>
