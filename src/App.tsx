@@ -46,7 +46,7 @@ const App = () => (
             <AppFooter />
           </div>
           {/* Global background image */}
-          <div aria-hidden="true" className="fixed inset-0 bg-[url('/lovable-uploads/a40df1ae-56a6-461a-8377-4c41dd0fd784.png')] bg-cover bg-center pointer-events-none opacity-[0.99] z-0" />
+          
         </ScheduleProvider>
       </BrowserRouter>
     </TooltipProvider>
