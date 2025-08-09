@@ -6,7 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CLINIC_TIMES, DAYS, RESIDENTS, ScheduleEntry, useSchedule, type Day, type ClinicTime } from "@/context/ScheduleContext";
 import { useMemo, useState } from "react";
-import { toast } from "@/components/ui/use-toast";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export default function ResidentView() {
   const { getFiltered, toggleArrived } = useSchedule();
@@ -15,6 +16,8 @@ export default function ResidentView() {
   const [day, setDay] = useState<string>("");
   const [clinicTime, setClinicTime] = useState<string>("");
   const [search, setSearch] = useState("");
+  const [arrivalOpen, setArrivalOpen] = useState(false);
+  const [arrivalEntry, setArrivalEntry] = useState<ScheduleEntry | null>(null);
 
   const rows = useMemo(() => {
     const filters = {
@@ -49,10 +52,8 @@ export default function ResidentView() {
     toggleArrived(row.id, !!checked);
     if (checked) {
       playArrivalSound();
-      toast({
-        title: "Patient arrived",
-        description: `Patient ${row.patientName} has arrived. Resident: ${row.residentName} • Clinic: ${row.clinicNumber} • Instructor: ${row.facultyName}`,
-      });
+      setArrivalEntry(row);
+      setArrivalOpen(true);
     }
   };
 
@@ -125,6 +126,29 @@ export default function ResidentView() {
             </TableBody>
           </Table>
         </section>
+
+        <Dialog open={arrivalOpen} onOpenChange={setArrivalOpen}>
+          <DialogContent className="sm:max-w-lg md:max-w-xl">
+            <DialogHeader>
+              <DialogTitle>Patient arrived</DialogTitle>
+              <DialogDescription>
+                The following patient has arrived. Please proceed.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-1 text-foreground">
+              <p><span className="font-medium">Patient:</span> {arrivalEntry?.patientName}</p>
+              <p><span className="font-medium">Resident:</span> {arrivalEntry?.residentName}</p>
+              <p><span className="font-medium">Clinic number:</span> {arrivalEntry?.clinicNumber}</p>
+              <p><span className="font-medium">Instructor:</span> {arrivalEntry?.facultyName}</p>
+            </div>
+            <DialogFooter className="mt-4">
+              <DialogClose asChild>
+                <Button variant="secondary">Close</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
       </main>
     </div>
   );
