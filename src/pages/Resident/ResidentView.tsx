@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CLINIC_TIMES, DAYS, RESIDENTS, ScheduleEntry, useSchedule, type Day, type ClinicTime } from "@/context/ScheduleContext";
 import { useMemo, useState } from "react";
+import { toast } from "@/components/ui/use-toast";
 
 export default function ResidentView() {
   const { getFiltered, toggleArrived } = useSchedule();
@@ -26,8 +27,33 @@ export default function ResidentView() {
     return list.filter((e) => e.patientName.toLowerCase().includes(search.toLowerCase()))
   }, [getFiltered, residentName, day, clinicTime, search]);
 
+  const playArrivalSound = () => {
+    try {
+      const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
+      const ctx = new AudioCtx();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "sine";
+      o.frequency.value = 880;
+      o.connect(g);
+      g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      o.start();
+      o.stop(ctx.currentTime + 0.32);
+    } catch {}
+  };
+
   const onArrivedChange = (row: ScheduleEntry, checked: boolean) => {
     toggleArrived(row.id, !!checked);
+    if (checked) {
+      playArrivalSound();
+      toast({
+        title: "Patient arrived",
+        description: `Patient ${row.patientName} has arrived. Resident: ${row.residentName} • Clinic: ${row.clinicNumber} • Instructor: ${row.facultyName}`,
+      });
+    }
   };
 
   return (
