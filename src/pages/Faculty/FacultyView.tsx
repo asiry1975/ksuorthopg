@@ -75,6 +75,8 @@ export default function FacultyView() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Arrived</TableHead>
+                <TableHead>Seen</TableHead>
                 <TableHead>Faculty</TableHead>
                 <TableHead>Resident</TableHead>
                 <TableHead>Clinic</TableHead>
@@ -83,13 +85,17 @@ export default function FacultyView() {
                 <TableHead>Patient</TableHead>
                 <TableHead>Clinic #</TableHead>
                 <TableHead>Notes</TableHead>
-                <TableHead>Arrived</TableHead>
-                <TableHead className="text-right">Seen</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {rows.map((row) => (
                 <TableRow key={row.id}>
+                  <TableCell>
+                    <Checkbox checked={row.arrived} disabled />
+                  </TableCell>
+                  <TableCell>
+                    <Checkbox checked={row.seen} onCheckedChange={(c) => onSeenChange(row, !!c)} />
+                  </TableCell>
                   <TableCell>{row.facultyName}</TableCell>
                   <TableCell>{row.residentName}</TableCell>
                   <TableCell>{row.clinicTime}</TableCell>
@@ -98,10 +104,6 @@ export default function FacultyView() {
                   <TableCell>{row.patientName}</TableCell>
                   <TableCell>{row.clinicNumber}</TableCell>
                   <TableCell className="max-w-[160px] truncate" title={row.notes}>{row.notes}</TableCell>
-                  <TableCell><Checkbox checked={row.arrived} disabled /></TableCell>
-                  <TableCell className="text-right">
-                    <Checkbox checked={row.seen} onCheckedChange={(c) => onSeenChange(row, !!c)} />
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

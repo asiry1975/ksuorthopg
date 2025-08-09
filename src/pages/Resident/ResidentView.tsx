@@ -75,25 +75,25 @@ export default function ResidentView() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Arrived</TableHead>
                 <TableHead>Resident</TableHead>
                 <TableHead>Patient</TableHead>
                 <TableHead>Day</TableHead>
                 <TableHead>Clinic</TableHead>
                 <TableHead>Time</TableHead>
-                <TableHead className="text-right">Arrived</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {rows.map((row) => (
                 <TableRow key={row.id}>
+                  <TableCell>
+                    <Checkbox checked={row.arrived} onCheckedChange={(c) => onArrivedChange(row, !!c)} />
+                  </TableCell>
                   <TableCell>{row.residentName}</TableCell>
                   <TableCell>{row.patientName}</TableCell>
                   <TableCell>{row.day}</TableCell>
                   <TableCell>{row.clinicTime}</TableCell>
                   <TableCell>{row.appointmentTime}</TableCell>
-                  <TableCell className="text-right">
-                    <Checkbox checked={row.arrived} onCheckedChange={(c) => onArrivedChange(row, !!c)} />
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
