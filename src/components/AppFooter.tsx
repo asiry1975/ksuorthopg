@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function AppFooter() {
   return (
-    <footer className="border-t border-border bg-accent">
+    <footer className="border-t border-border bg-[hsl(var(--accent-strong))]">
       <nav aria-label="Footer navigation" className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
           <Link to="/" className="text-center font-medium text-foreground hover:text-primary transition-colors">
