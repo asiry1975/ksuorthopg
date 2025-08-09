@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 export default function AppHeader({ title }: { title: string }) {
   const navigate = useNavigate();
   return (
-    <header className="sticky top-0 z-20 bg-background/80 backdrop-blur border-b">
+    <header className="sticky top-0 z-20 bg-background border-b">
       <div className="container mx-auto flex items-center h-12 gap-2 px-3">
         <button
           aria-label="Go back"

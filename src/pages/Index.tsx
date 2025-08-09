@@ -1,9 +1,11 @@
 import { GraduationCap, Users, UserSquare2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import AppHeader from "@/components/AppHeader";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-accent/20">
+      <AppHeader title="Home" />
       <header className="pt-8 pb-6 text-center">
         <h1 className="text-2xl font-bold">KSU Orthodontic Graduate Programs</h1>
         <p className="text-sm text-muted-foreground mt-2">Tools for residents and faculty in orthodontic graduate program</p>
