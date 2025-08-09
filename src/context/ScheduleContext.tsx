@@ -37,6 +37,7 @@ interface ScheduleContextValue {
 const ScheduleContext = createContext<ScheduleContextValue | undefined>(undefined);
 
 const STORAGE_KEY = "ksu-ortho-schedules";
+const LAST_CLEARED_KEY = "ksu-ortho-schedules-last-cleared";
 
 const dayOrder: Record<Day, number> = {
   Sunday: 0,
@@ -75,6 +76,58 @@ export const ScheduleProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       localStorage.setItem(STORAGE_KEY, JSON.stringify(schedules));
     } catch {}
   }, [schedules]);
+
+  // Auto-clear all entries daily at 7:00 PM (local time) per device
+  useEffect(() => {
+    const doClear = () => {
+      setSchedules([]);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+        localStorage.setItem(LAST_CLEARED_KEY, String(Date.now()));
+      } catch {}
+    };
+
+    const getToday7pm = () => {
+      const d = new Date();
+      d.setHours(19, 0, 0, 0);
+      return d.getTime();
+    };
+
+    // If the app opens after today's 7 PM and wasn't cleared yet, clear immediately
+    try {
+      const lastCleared = Number(localStorage.getItem(LAST_CLEARED_KEY) || 0);
+      const now = Date.now();
+      const today7pm = getToday7pm();
+      if (now >= today7pm && lastCleared < today7pm) {
+        doClear();
+      }
+    } catch {}
+
+    const msUntilNext7pm = () => {
+      const now = new Date();
+      const next = new Date();
+      next.setHours(19, 0, 0, 0);
+      if (now.getTime() >= next.getTime()) {
+        next.setDate(next.getDate() + 1);
+      }
+      return next.getTime() - now.getTime();
+    };
+
+    const firstTimeout = setTimeout(() => {
+      doClear();
+      // subsequent clears every 24 hours
+      const daily = setInterval(doClear, 24 * 60 * 60 * 1000);
+      // store interval id on window for cleanup reference
+      (window as any).__ksuDailyClearInterval = daily;
+    }, msUntilNext7pm());
+
+    return () => {
+      clearTimeout(firstTimeout);
+      const daily = (window as any).__ksuDailyClearInterval;
+      if (daily) clearInterval(daily);
+    };
+  }, []);
+
 
   const addEntry: ScheduleContextValue["addEntry"] = (entry) => {
     const newEntry: ScheduleEntry = {
