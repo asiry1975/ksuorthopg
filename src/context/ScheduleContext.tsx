@@ -174,9 +174,29 @@ export function useSchedule() {
 }
 
 export const RESIDENTS = [
-  "Resident A",
-  "Resident B",
-  "Resident C",
+  "Dr. Norah M. Alyabis",
+  "Dr. Hafsah H. Alali",
+  "Dr. Nada A. Alghamdi",
+  "Dr. Ghadeer A. Alotaibi",
+  "Dr. Atheer A. Alfarhan",
+  "Dr. Faisal F. Alzamil",
+  "Dr. Abeer O. Alofisan",
+  "Dr. Yasmeen A. Alswaity",
+  "Dr. Faisal N. Talic",
+  "Dr. Third Year",
+  "Dr. Turki A. Alajaji",
+  "Dr. Sultan I. Alsalamah",
+  "Dr. Bashayer M. Alshehry",
+  "Dr. Nouf A. Bindakhil",
+  "Dr. Mohammad A. Alharbi",
+  "Dr. Jawaher S. Alsenaidi",
+  "Dr. Ahmed M. Alsaleh",
+  "Dr. Nouf F. Alfawaz",
+  "Dr. Shaima E. Alabdulkareem",
+  "Dr. Saad A. Albwardi",
+  "Dr. Alhanouf A. Alnowaiser",
+  "Dr. Nawaf A. Alfawaz",
+  "Dr. Ziyad M. Aldoghan",
 ];
 
 export const FACULTY = [
