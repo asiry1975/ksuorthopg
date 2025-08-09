@@ -87,7 +87,7 @@ export default function ResidentView() {
             </Select>
           </div>
           <div className="space-y-1">
-            <Label>Clinic</Label>
+            <Label>Clinic Time</Label>
             <Select value={clinicTime} onValueChange={(v) => setClinicTime(v === "ALL" ? "" : v)}>
               <SelectTrigger><SelectValue placeholder="All" /></SelectTrigger>
               <SelectContent className="z-50">
@@ -108,7 +108,7 @@ export default function ResidentView() {
                 <TableHead>Time</TableHead>
                 <TableHead>Patient</TableHead>
                 <TableHead>Day</TableHead>
-                <TableHead>Clinic</TableHead>
+                <TableHead>Clinic Time</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
