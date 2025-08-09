@@ -104,10 +104,11 @@ export default function ResidentView() {
               <TableRow>
                 <TableHead>Arrived</TableHead>
                 <TableHead>Resident</TableHead>
+                <TableHead>Faculty</TableHead>
+                <TableHead>Time</TableHead>
                 <TableHead>Patient</TableHead>
                 <TableHead>Day</TableHead>
                 <TableHead>Clinic</TableHead>
-                <TableHead>Time</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -117,10 +118,11 @@ export default function ResidentView() {
                     <Checkbox checked={row.arrived} onCheckedChange={(c) => onArrivedChange(row, !!c)} />
                   </TableCell>
                   <TableCell>{row.residentName}</TableCell>
+                  <TableCell>{row.facultyName}</TableCell>
+                  <TableCell>{row.appointmentTime}</TableCell>
                   <TableCell>{row.patientName}</TableCell>
                   <TableCell>{row.day}</TableCell>
                   <TableCell>{row.clinicTime}</TableCell>
-                  <TableCell>{row.appointmentTime}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
