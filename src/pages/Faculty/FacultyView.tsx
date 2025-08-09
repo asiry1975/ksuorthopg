@@ -41,30 +41,30 @@ export default function FacultyView() {
           </div>
           <div className="space-y-1">
             <Label>Faculty</Label>
-            <Select value={facultyName} onValueChange={(v) => setFacultyName(v)}>
+            <Select value={facultyName} onValueChange={(v) => setFacultyName(v === "ALL" ? "" : v)}>
               <SelectTrigger><SelectValue placeholder="All" /></SelectTrigger>
               <SelectContent className="z-50">
-                <SelectItem value="">All</SelectItem>
+                <SelectItem value="ALL">All</SelectItem>
                 {FACULTY.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1">
             <Label>Day</Label>
-            <Select value={day} onValueChange={(v) => setDay(v)}>
+            <Select value={day} onValueChange={(v) => setDay(v === "ALL" ? "" : v)}>
               <SelectTrigger><SelectValue placeholder="All" /></SelectTrigger>
               <SelectContent className="z-50">
-                <SelectItem value="">All</SelectItem>
+                <SelectItem value="ALL">All</SelectItem>
                 {DAYS.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1">
             <Label>Clinic</Label>
-            <Select value={clinicTime} onValueChange={(v) => setClinicTime(v)}>
+            <Select value={clinicTime} onValueChange={(v) => setClinicTime(v === "ALL" ? "" : v)}>
               <SelectTrigger><SelectValue placeholder="All" /></SelectTrigger>
               <SelectContent className="z-50">
-                <SelectItem value="">All</SelectItem>
+                <SelectItem value="ALL">All</SelectItem>
                 {CLINIC_TIMES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
               </SelectContent>
             </Select>
