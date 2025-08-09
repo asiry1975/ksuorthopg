@@ -23,7 +23,7 @@ export default function AppHeader({ title }: { title: string }) {
           <img
             src="/lovable-uploads/c233c4b5-45bf-486c-96a0-cf5049f9e2b0.png"
             alt="King Saud University logo"
-            className="h-10 w-auto select-none"
+            className="h-20 w-auto select-none"
             loading="lazy"
           />
           <div dir="rtl">
