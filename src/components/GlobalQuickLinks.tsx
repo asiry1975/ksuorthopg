@@ -8,15 +8,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical } from "lucide-react";
+import { Menu } from "lucide-react";
 
 export default function GlobalQuickLinks() {
   return (
-    <div className="fixed top-3 right-3 z-50">
+    <div className="fixed top-3 left-3 z-50">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon" aria-label="Open quick links">
-            <MoreVertical className="h-5 w-5" />
+            <Menu className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
