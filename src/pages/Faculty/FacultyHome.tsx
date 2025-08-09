@@ -30,7 +30,7 @@ export default function FacultyHome() {
           ))}
         </div>
       </main>
-      <div aria-hidden="true" className="absolute inset-0 bg-[url('/lovable-uploads/ba2a01be-906d-4353-8786-be50ca9e1525.png')] bg-cover bg-center pointer-events-none opacity-95 -z-10" />
+      <div aria-hidden="true" className="absolute inset-0 bg-[url('/lovable-uploads/0c2b2b50-3499-4c1a-9dc1-d6fe23f22c67.png')] bg-cover bg-center pointer-events-none opacity-95 -z-10" />
     </div>
   );
 }
