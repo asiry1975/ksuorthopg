@@ -11,7 +11,7 @@ export default function ProgramDirectorHome() {
   ];
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="min-h-screen relative">
       <AppHeader title="Program Director" />
       <main className="container mx-auto p-4">
         <div className="grid grid-cols-2 gap-3">
@@ -29,7 +29,7 @@ export default function ProgramDirectorHome() {
           ))}
         </div>
       </main>
-      <div aria-hidden="true" className="fixed inset-0 bg-[url('/lovable-uploads/ba2a01be-906d-4353-8786-be50ca9e1525.png')] bg-cover bg-center pointer-events-none opacity-95 -z-10" />
+      <div aria-hidden="true" className="absolute inset-0 bg-[url('/lovable-uploads/ba2a01be-906d-4353-8786-be50ca9e1525.png')] bg-cover bg-center pointer-events-none opacity-95 -z-10" />
     </div>
   );
 }

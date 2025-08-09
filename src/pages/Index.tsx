@@ -4,7 +4,7 @@ import AppHeader from "@/components/AppHeader";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="min-h-screen relative">
       <AppHeader title="Home" />
       <header className="pt-8 pb-6 text-center">
         <h1 className="text-2xl font-bold">KSU Orthodontic Graduate Programs</h1>
@@ -43,7 +43,7 @@ const Index = () => {
           </Link>
         </div>
       </main>
-      <div aria-hidden="true" className="fixed inset-0 bg-[url('/lovable-uploads/ba2a01be-906d-4353-8786-be50ca9e1525.png')] bg-cover bg-center pointer-events-none opacity-95 -z-10" />
+      <div aria-hidden="true" className="absolute inset-0 bg-[url('/lovable-uploads/ba2a01be-906d-4353-8786-be50ca9e1525.png')] bg-cover bg-center pointer-events-none opacity-95 -z-10" />
     </div>
   );
 };
