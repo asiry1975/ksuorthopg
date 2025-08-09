@@ -4,14 +4,17 @@ export default function AppFooter() {
   return (
     <footer className="border-t border-border bg-background/80 backdrop-blur-sm">
       <nav aria-label="Footer navigation" className="container mx-auto px-4 py-6">
-        <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
-          <Link to="/resident" className="font-medium text-foreground hover:text-primary transition-colors">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+          <Link to="/" className="text-center font-medium text-foreground hover:text-primary transition-colors">
+            Home
+          </Link>
+          <Link to="/resident" className="text-center font-medium text-foreground hover:text-primary transition-colors">
             Resident
           </Link>
-          <Link to="/faculty" className="font-medium text-foreground hover:text-primary transition-colors">
+          <Link to="/faculty" className="text-center font-medium text-foreground hover:text-primary transition-colors">
             Faculty
           </Link>
-          <Link to="/program-director" className="font-medium text-foreground hover:text-primary transition-colors">
+          <Link to="/program-director" className="text-center font-medium text-foreground hover:text-primary transition-colors">
             Program Director
           </Link>
         </div>
