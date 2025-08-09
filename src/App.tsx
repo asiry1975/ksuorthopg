@@ -23,27 +23,26 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScheduleProvider>
-          <Routes>
-            <Route path="/" element={<Index />} />
+          <div className="relative z-10">
+            <Routes>
+              <Route path="/" element={<Index />} />
 
-            <Route path="/resident" element={<ResidentHome />} />
-            <Route path="/resident/schedule" element={<ResidentScheduleForm />} />
-            <Route path="/resident/view" element={<ResidentView />} />
+              <Route path="/resident" element={<ResidentHome />} />
+              <Route path="/resident/schedule" element={<ResidentScheduleForm />} />
+              <Route path="/resident/view" element={<ResidentView />} />
 
-            <Route path="/faculty" element={<FacultyHome />} />
-            <Route path="/faculty/view" element={<FacultyView />} />
+              <Route path="/faculty" element={<FacultyHome />} />
+              <Route path="/faculty/view" element={<FacultyView />} />
 
-            <Route path="/program-director" element={<ProgramDirectorHome />} />
+              <Route path="/program-director" element={<ProgramDirectorHome />} />
 
-            <Route path="/coming-soon" element={<ComingSoonPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          {/* Global background overlay (99% transparency -> 1% opacity) */}
-          <div
-            aria-hidden="true"
-            className="fixed inset-0 bg-[url('/lovable-uploads/a40df1ae-56a6-461a-8377-4c41dd0fd784.png')] bg-cover bg-center pointer-events-none opacity-[0.01] z-50"
-          />
+              <Route path="/coming-soon" element={<ComingSoonPage />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+          {/* Global background image */}
+          <div aria-hidden="true" className="fixed inset-0 bg-[url('/lovable-uploads/a40df1ae-56a6-461a-8377-4c41dd0fd784.png')] bg-cover bg-center pointer-events-none opacity-[0.99] z-0" />
         </ScheduleProvider>
       </BrowserRouter>
     </TooltipProvider>
