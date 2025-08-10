@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { APPOINTMENT_TIMES, CLINIC_TIMES, DAYS, FACULTY, RESIDENTS, useSchedule } from "@/context/ScheduleContext";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function ResidentScheduleForm() {
   const { addEntry } = useSchedule();
@@ -20,6 +21,7 @@ export default function ResidentScheduleForm() {
   const [patientName, setPatientName] = useState("");
   const [clinicNumber, setClinicNumber] = useState("");
   const [notes, setNotes] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +31,7 @@ export default function ResidentScheduleForm() {
     }
     addEntry({ residentName, facultyName, day, clinicTime, appointmentTime, patientName, clinicNumber, notes });
     toast({ title: "Schedule added", description: `${patientName} at ${appointmentTime}` });
+    setIsDialogOpen(true);
     setPatientName("");
     setClinicNumber("");
     setNotes("");
@@ -130,6 +133,20 @@ export default function ResidentScheduleForm() {
 
           <Button type="submit" className="w-full">Submit</Button>
         </form>
+
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-[700px]">
+            <DialogHeader>
+              <DialogTitle>Schedule submitted</DialogTitle>
+              <DialogDescription>
+                Your entry has been added successfully. You can close this dialog to continue.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button onClick={() => setIsDialogOpen(false)}>Close</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
