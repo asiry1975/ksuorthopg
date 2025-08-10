@@ -28,6 +28,7 @@ export default function FacultyView() {
 
   const [arrivalOpen, setArrivalOpen] = useState(false);
   const [arrivalPayload, setArrivalPayload] = useState<any>(null);
+  const [arrivalEvent, setArrivalEvent] = useState<'arrived' | 'canceled'>('arrived');
 
   // Optimistic arrived updates based on realtime broadcast
   const [arrivedKeys, setArrivedKeys] = useState<Set<string>>(new Set());
@@ -89,6 +90,22 @@ export default function FacultyView() {
         return next;
       });
       setArrivalPayload(p);
+      setArrivalEvent('arrived');
+      setArrivalOpen(true);
+      playArrivalSound();
+    });
+    ch.on('broadcast', { event: 'patient_arrival_canceled' }, (payload: any) => {
+      const p = (payload?.payload) || payload;
+      if (!p?.facultyName || !myFacultyName) return;
+      if (String(p.facultyName).toLowerCase() !== String(myFacultyName).toLowerCase()) return;
+      // Optimistically reflect cancellation in UI immediately
+      setArrivedKeys((prev) => {
+        const next = new Set(prev);
+        next.delete(makeKey(p));
+        return next;
+      });
+      setArrivalPayload(p);
+      setArrivalEvent('canceled');
       setArrivalOpen(true);
       playArrivalSound();
     });
@@ -181,9 +198,9 @@ export default function FacultyView() {
         <Dialog open={arrivalOpen} onOpenChange={setArrivalOpen}>
           <DialogContent className="sm:max-w-lg md:max-w-xl">
             <DialogHeader>
-              <DialogTitle>Patient arrived</DialogTitle>
+              <DialogTitle>{arrivalEvent === 'arrived' ? 'Patient arrived' : 'Arrival canceled'}</DialogTitle>
               <DialogDescription>
-                The following patient has arrived for your clinic.
+                {arrivalEvent === 'arrived' ? 'The following patient has arrived for your clinic.' : 'The patient arrival was canceled.'}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-1 text-foreground">

@@ -63,25 +63,26 @@ export default function ResidentView() {
 
   const onArrivedChange = (row: ScheduleEntry, checked: boolean) => {
     toggleArrived(row.id, !!checked);
+    const payload = {
+      facultyName: row.facultyName,
+      residentName: row.residentName,
+      clinicNumber: row.clinicNumber,
+      patientName: row.patientName,
+      appointmentTime: row.appointmentTime,
+      day: row.day,
+      clinicTime: row.clinicTime,
+    };
     if (checked) {
       playArrivalSound();
-
-      // Broadcast arrival to faculty
-      const payload = {
-        facultyName: row.facultyName,
-        residentName: row.residentName,
-        clinicNumber: row.clinicNumber,
-        patientName: row.patientName,
-        appointmentTime: row.appointmentTime,
-        day: row.day,
-        clinicTime: row.clinicTime,
-      };
       try {
         channelRef.current?.send({ type: 'broadcast', event: 'patient_arrived', payload });
       } catch {}
-
       setArrivalEntry(row);
       setArrivalOpen(true);
+    } else {
+      try {
+        channelRef.current?.send({ type: 'broadcast', event: 'patient_arrival_canceled', payload });
+      } catch {}
     }
   };
 
