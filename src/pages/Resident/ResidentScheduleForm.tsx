@@ -22,10 +22,16 @@ export default function ResidentScheduleForm() {
   const [clinicNumber, setClinicNumber] = useState("");
   const [notes, setNotes] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
+  const [touchedPatientName, setTouchedPatientName] = useState(false);
+  const [touchedClinicNumber, setTouchedClinicNumber] = useState(false);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!residentName || !facultyName || !patientName || !clinicNumber) {
+    if (!residentName || !facultyName || !patientName.trim() || !clinicNumber.trim()) {
+      setShowErrors(true);
+      setTouchedPatientName(true);
+      setTouchedClinicNumber(true);
       toast({ title: "Missing fields", description: "Please complete all required fields." });
       return;
     }
@@ -36,6 +42,10 @@ export default function ResidentScheduleForm() {
     setClinicNumber("");
     setNotes("");
   };
+
+  const isMissingPatient = patientName.trim().length === 0;
+  const isMissingClinic = clinicNumber.trim().length === 0;
+  const isValid = Boolean(residentName && facultyName && !isMissingPatient && !isMissingClinic);
 
   return (
     <div className="min-h-screen bg-background">
@@ -117,12 +127,34 @@ export default function ResidentScheduleForm() {
 
             <div className="space-y-2">
               <Label>Patient Name</Label>
-              <Input value={patientName} onChange={(e) => setPatientName(e.target.value)} placeholder="Patient name" />
+              <Input
+                value={patientName}
+                onChange={(e) => setPatientName(e.target.value)}
+                onBlur={() => setTouchedPatientName(true)}
+                placeholder="Patient name"
+                required
+                aria-invalid={(showErrors || touchedPatientName) && isMissingPatient}
+                className={`${(showErrors || touchedPatientName) && isMissingPatient ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+              />
+              {((showErrors || touchedPatientName) && isMissingPatient) && (
+                <p className="text-destructive text-sm">Patient name is required.</p>
+              )}
             </div>
 
             <div className="space-y-2">
               <Label>Clinic Number</Label>
-              <Input value={clinicNumber} onChange={(e) => setClinicNumber(e.target.value)} placeholder="e.g. C-12" />
+              <Input
+                value={clinicNumber}
+                onChange={(e) => setClinicNumber(e.target.value)}
+                onBlur={() => setTouchedClinicNumber(true)}
+                placeholder="e.g. C-12"
+                required
+                aria-invalid={(showErrors || touchedClinicNumber) && isMissingClinic}
+                className={`${(showErrors || touchedClinicNumber) && isMissingClinic ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+              />
+              {((showErrors || touchedClinicNumber) && isMissingClinic) && (
+                <p className="text-destructive text-sm">Clinic number is required.</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -131,7 +163,7 @@ export default function ResidentScheduleForm() {
             </div>
           </div>
 
-          <Button type="submit" className="w-full">Submit</Button>
+          <Button type="submit" className="w-full" disabled={!isValid} aria-disabled={!isValid}>Submit</Button>
         </form>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
