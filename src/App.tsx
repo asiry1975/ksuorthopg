@@ -11,6 +11,7 @@ import ResidentScheduleFormTest from "./pages/Resident/ResidentScheduleFormTest"
 import ResidentView from "./pages/Resident/ResidentView";
 import FacultyHome from "./pages/Faculty/FacultyHome";
 import FacultyView from "./pages/Faculty/FacultyView";
+import FacultyViewTest from "./pages/Faculty/FacultyViewTest";
 import ProgramDirectorHome from "./pages/ProgramDirector/ProgramDirectorHome";
 import ComingSoonPage from "./pages/ComingSoon";
 import { ScheduleProvider } from "./context/ScheduleContext";
@@ -37,6 +38,7 @@ const App = () => (
 
               <Route path="/faculty" element={<FacultyHome />} />
               <Route path="/faculty/view" element={<FacultyView />} />
+              <Route path="/faculty/view-test" element={<FacultyViewTest />} />
 
               <Route path="/program-director" element={<ProgramDirectorHome />} />
 
