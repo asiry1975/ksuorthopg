@@ -17,6 +17,7 @@ import ComingSoonPage from "./pages/ComingSoon";
 import { ScheduleProvider } from "./context/ScheduleContext";
 import AppFooter from "./components/AppFooter";
 import AuthPage from "./pages/Auth";
+import PasswordRecovery from "./pages/PasswordRecovery";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
@@ -33,7 +34,8 @@ const App = () => (
           <ScheduleProvider>
             <div className="relative z-10">
               <Routes>
-                <Route path="/auth" element={<AuthPage />} />
+<Route path="/auth" element={<AuthPage />} />
+                <Route path="/auth/recovery" element={<PasswordRecovery />} />
                 <Route path="/" element={<Index />} />
 
                 <Route

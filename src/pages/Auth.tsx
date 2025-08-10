@@ -90,6 +90,22 @@ const handleSignup = async () => {
     setMode("login");
   };
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast.error("Enter your email first");
+      return;
+    }
+    setLoading(true);
+    const redirectUrl = `${window.location.origin}/auth/recovery`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl });
+    setLoading(false);
+    if (error) {
+      toast.error(error.message || "Failed to send reset email");
+      return;
+    }
+    toast.success("Password reset email sent. Check your inbox.");
+  };
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (mode === "login") await handleLogin();
@@ -139,9 +155,16 @@ const handleSignup = async () => {
                 <Label htmlFor="email">Email address</Label>
                 <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
               </div>
-              <div className="space-y-2">
+<div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                {mode === "login" && (
+                  <div className="text-right">
+                    <button type="button" className="text-sm underline text-primary" onClick={handleForgotPassword}>
+                      Forgot password?
+                    </button>
+                  </div>
+                )}
               </div>
               <Button type="submit" disabled={loading} className="w-full">
                 {loading ? "Please wait..." : mode === "login" ? "Login" : "Sign up"}
