@@ -8,11 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { APPOINTMENT_TIMES, CLINIC_TIMES, DAYS, FACULTY, useSchedule } from "@/context/ScheduleContext";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ResidentScheduleFormTest() {
   const { addEntry } = useSchedule();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   // Default to a placeholder until auth is wired up; will be replaced by logged-in resident's name
   const [residentName, setResidentName] = useState<string>("Test Resident");
@@ -30,18 +31,13 @@ export default function ResidentScheduleFormTest() {
 
   useEffect(() => {
     document.title = "Resident Schedule Form Test";
-    // Try to read the logged-in user's name (optional for now)
-    supabase.auth.getUser().then(({ data }) => {
-      const user = data.user;
-      if (user) {
-        const name = (user.user_metadata as any)?.full_name || (user.user_metadata as any)?.name || user.email || "Test Resident";
-        setResidentName(name);
-      }
-    }).catch(() => {
-      // ignore errors in test mode
-    });
   }, []);
 
+  useEffect(() => {
+    const meta = (user as any)?.user_metadata || {};
+    const name = meta.display_name || meta.full_name || meta.name || user?.email || "Test Resident";
+    if (name && name !== residentName) setResidentName(name);
+  }, [user]);
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!residentName || !facultyName || !patientName.trim() || !clinicNumber.trim()) {
