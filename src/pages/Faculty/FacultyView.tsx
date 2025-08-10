@@ -29,6 +29,20 @@ export default function FacultyView() {
   const [arrivalOpen, setArrivalOpen] = useState(false);
   const [arrivalPayload, setArrivalPayload] = useState<any>(null);
 
+  // Optimistic arrived updates based on realtime broadcast
+  const [arrivedKeys, setArrivedKeys] = useState<Set<string>>(new Set());
+  const makeKey = (d: any) => [
+    d.facultyName,
+    d.residentName,
+    d.clinicNumber,
+    d.patientName,
+    d.appointmentTime,
+    d.day,
+    d.clinicTime,
+  ]
+    .map((x: any) => String(x ?? "").toLowerCase().trim())
+    .join("|");
+
   const rows = useMemo(() => {
     const filters = {
       facultyName: facultyName || undefined,
@@ -68,6 +82,12 @@ export default function FacultyView() {
       const p = (payload?.payload) || payload;
       if (!p?.facultyName || !myFacultyName) return;
       if (String(p.facultyName).toLowerCase() !== String(myFacultyName).toLowerCase()) return;
+      // Optimistically reflect arrival in UI immediately
+      setArrivedKeys((prev) => {
+        const next = new Set(prev);
+        next.add(makeKey(p));
+        return next;
+      });
       setArrivalPayload(p);
       setArrivalOpen(true);
       playArrivalSound();
@@ -139,7 +159,7 @@ export default function FacultyView() {
               {rows.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell>
-                    <Checkbox checked={row.arrived} disabled />
+                    <Checkbox checked={row.arrived || arrivedKeys.has(makeKey(row))} disabled />
                   </TableCell>
                   <TableCell>
                     <Checkbox checked={row.seen} onCheckedChange={(c) => onSeenChange(row, !!c)} />

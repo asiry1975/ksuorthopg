@@ -21,6 +21,20 @@ export default function FacultyViewTest() {
   const [arrivalOpen, setArrivalOpen] = useState(false);
   const [arrivalPayload, setArrivalPayload] = useState<any>(null);
 
+  // Optimistic arrived updates based on realtime broadcast
+  const [arrivedKeys, setArrivedKeys] = useState<Set<string>>(new Set());
+  const makeKey = (d: any) => [
+    d.facultyName,
+    d.residentName,
+    d.clinicNumber,
+    d.patientName,
+    d.appointmentTime,
+    d.day,
+    d.clinicTime,
+  ]
+    .map((x: any) => String(x ?? "").toLowerCase().trim())
+    .join("|");
+
   useEffect(() => {
     document.title = "Faculty View Test";
     // Pull faculty name from login via Supabase for test page
@@ -66,6 +80,12 @@ export default function FacultyViewTest() {
       const p = (payload?.payload) || payload;
       if (!p?.facultyName || !facultyName) return;
       if (String(p.facultyName).toLowerCase() !== String(facultyName).toLowerCase()) return;
+      // Optimistically reflect arrival in UI immediately
+      setArrivedKeys((prev) => {
+        const next = new Set(prev);
+        next.add(makeKey(p));
+        return next;
+      });
       setArrivalPayload(p);
       setArrivalOpen(true);
       playArrivalSound();
@@ -147,7 +167,7 @@ export default function FacultyViewTest() {
               {rows.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell>
-                    <Checkbox checked={row.arrived} disabled />
+                    <Checkbox checked={row.arrived || arrivedKeys.has(makeKey(row))} disabled />
                   </TableCell>
                   <TableCell>
                     <Checkbox checked={row.seen} onCheckedChange={(c) => onSeenChange(row, !!c)} />
