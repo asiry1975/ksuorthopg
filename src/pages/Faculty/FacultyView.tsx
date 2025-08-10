@@ -5,15 +5,29 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CLINIC_TIMES, DAYS, FACULTY, ScheduleEntry, useSchedule, type Day, type ClinicTime } from "@/context/ScheduleContext";
-import { useMemo, useState } from "react";
-
+import { useEffect, useMemo, useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
 export default function FacultyView() {
   const { getFiltered, toggleSeen } = useSchedule();
+  const { user } = useAuth();
 
   const [facultyName, setFacultyName] = useState<string>("");
   const [day, setDay] = useState<string>("");
   const [clinicTime, setClinicTime] = useState<string>("");
   const [search, setSearch] = useState("");
+
+  const myFacultyName = useMemo(() => {
+    const um: any = user?.user_metadata || {};
+    return (
+      um.display_name || um.full_name || um.name || user?.email || ""
+    );
+  }, [user]);
+
+  const [arrivalOpen, setArrivalOpen] = useState(false);
+  const [arrivalPayload, setArrivalPayload] = useState<any>(null);
 
   const rows = useMemo(() => {
     const filters = {
@@ -29,6 +43,40 @@ export default function FacultyView() {
   const onSeenChange = (row: ScheduleEntry, checked: boolean) => {
     toggleSeen(row.id, !!checked);
   };
+
+  const playArrivalSound = () => {
+    try {
+      const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
+      const ctx = new AudioCtx();
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "sine";
+      o.frequency.value = 880;
+      o.connect(g);
+      g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.001, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(1.0, ctx.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+      o.start();
+      o.stop(ctx.currentTime + 0.62);
+    } catch {}
+  };
+
+  useEffect(() => {
+    const ch = supabase.channel('arrivals');
+    ch.on('broadcast', { event: 'patient_arrived' }, (payload: any) => {
+      const p = (payload?.payload) || payload;
+      if (!p?.facultyName || !myFacultyName) return;
+      if (String(p.facultyName).toLowerCase() !== String(myFacultyName).toLowerCase()) return;
+      setArrivalPayload(p);
+      setArrivalOpen(true);
+      playArrivalSound();
+    });
+    ch.subscribe();
+    return () => {
+      try { ch.unsubscribe(); } catch {}
+    };
+  }, [myFacultyName]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -109,7 +157,28 @@ export default function FacultyView() {
             </TableBody>
           </Table>
         </section>
-      </main>
-    </div>
-  );
-}
+
+        <Dialog open={arrivalOpen} onOpenChange={setArrivalOpen}>
+          <DialogContent className="sm:max-w-lg md:max-w-xl">
+            <DialogHeader>
+              <DialogTitle>Patient arrived</DialogTitle>
+              <DialogDescription>
+                The following patient has arrived for your clinic.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-1 text-foreground">
+              <p><span className="font-medium">Instructor:</span> {arrivalPayload?.facultyName}</p>
+              <p><span className="font-medium">Resident:</span> {arrivalPayload?.residentName}</p>
+              <p><span className="font-medium">Clinic number:</span> {arrivalPayload?.clinicNumber}</p>
+              <p><span className="font-medium">Patient:</span> {arrivalPayload?.patientName}</p>
+              <p><span className="font-medium">Time:</span> {arrivalPayload?.appointmentTime} ({arrivalPayload?.day} {arrivalPayload?.clinicTime})</p>
+            </div>
+            <DialogFooter className="mt-4">
+              <Button variant="secondary" onClick={() => setArrivalOpen(false)}>Close</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+       </main>
+     </div>
+   );
+ }

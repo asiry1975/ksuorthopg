@@ -5,9 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CLINIC_TIMES, DAYS, RESIDENTS, ScheduleEntry, useSchedule, type Day, type ClinicTime } from "@/context/ScheduleContext";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function ResidentView() {
   const { getFiltered, toggleArrived } = useSchedule();
@@ -18,6 +19,18 @@ export default function ResidentView() {
   const [search, setSearch] = useState("");
   const [arrivalOpen, setArrivalOpen] = useState(false);
   const [arrivalEntry, setArrivalEntry] = useState<ScheduleEntry | null>(null);
+
+  // Realtime channel for broadcasting arrivals to faculty
+  const channelRef = useRef<any>(null);
+  useEffect(() => {
+    const ch = supabase.channel('arrivals');
+    channelRef.current = ch;
+    ch.subscribe();
+    return () => {
+      try { ch.unsubscribe(); } catch {}
+      channelRef.current = null;
+    };
+  }, []);
 
   const rows = useMemo(() => {
     const filters = {
@@ -41,10 +54,10 @@ export default function ResidentView() {
       o.connect(g);
       g.connect(ctx.destination);
       g.gain.setValueAtTime(0.001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      g.gain.exponentialRampToValueAtTime(0.9, ctx.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
       o.start();
-      o.stop(ctx.currentTime + 0.32);
+      o.stop(ctx.currentTime + 0.52);
     } catch {}
   };
 
@@ -52,6 +65,21 @@ export default function ResidentView() {
     toggleArrived(row.id, !!checked);
     if (checked) {
       playArrivalSound();
+
+      // Broadcast arrival to faculty
+      const payload = {
+        facultyName: row.facultyName,
+        residentName: row.residentName,
+        clinicNumber: row.clinicNumber,
+        patientName: row.patientName,
+        appointmentTime: row.appointmentTime,
+        day: row.day,
+        clinicTime: row.clinicTime,
+      };
+      try {
+        channelRef.current?.send({ type: 'broadcast', event: 'patient_arrived', payload });
+      } catch {}
+
       setArrivalEntry(row);
       setArrivalOpen(true);
     }
