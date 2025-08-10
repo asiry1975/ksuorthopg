@@ -1,9 +1,15 @@
 import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import GlobalQuickLinks from "@/components/GlobalQuickLinks";
-
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 export default function AppHeader({ title }: { title: string }) {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth", { replace: true });
+  };
   return (
     <>
       <header dir="rtl" className="sticky top-0 z-40 bg-background border-b shadow-sm">
@@ -26,8 +32,11 @@ export default function AppHeader({ title }: { title: string }) {
             className="h-40 w-auto select-none"
             loading="lazy"
           />
-          <div dir="rtl">
+          <div dir="rtl" className="flex items-center gap-2">
             <GlobalQuickLinks />
+            <Button variant="outline" size="sm" onClick={handleSignOut} aria-label="Sign out">
+              Sign out
+            </Button>
           </div>
         </div>
       </div>
