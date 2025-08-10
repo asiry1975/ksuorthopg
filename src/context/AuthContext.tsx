@@ -73,6 +73,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Ensure user_roles has a row matching metadata role (one-time, safe)
+  useEffect(() => {
+    const ensureRole = async () => {
+      if (!user) return;
+      // if we already have a DB role, skip
+      if (roles.length > 0) return;
+      const metaRoles = deriveRolesFromMetadata(user);
+      if (metaRoles.length === 0) return;
+      // insert first role only
+      const role = metaRoles[0] as AppRole;
+      type DBRole = 'resident' | 'faculty' | 'program_director';
+      const allowed: DBRole[] = ['resident', 'faculty', 'program_director'];
+      const roleVal = allowed.includes(role as DBRole) ? (role as DBRole) : null;
+      if (!roleVal) return;
+      await supabase
+        .from('user_roles')
+        .insert({ user_id: user.id, role: roleVal })
+        .then(() => loadRoles(user.id));
+    };
+    ensureRole();
+  }, [user, roles]);
   const signOut = async () => {
     await supabase.auth.signOut();
     setRoles([]);
