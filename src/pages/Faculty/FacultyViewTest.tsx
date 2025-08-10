@@ -24,6 +24,7 @@ export default function FacultyViewTest() {
 
   // Optimistic arrived updates based on realtime broadcast
   const [arrivedKeys, setArrivedKeys] = useState<Set<string>>(new Set());
+  const [canceledKeys, setCanceledKeys] = useState<Set<string>>(new Set());
   const makeKey = (d: any) => [
     d.facultyName,
     d.residentName,
@@ -87,6 +88,11 @@ export default function FacultyViewTest() {
         next.add(makeKey(p));
         return next;
       });
+      setCanceledKeys((prev) => {
+        const next = new Set(prev);
+        next.delete(makeKey(p));
+        return next;
+      });
       setArrivalPayload(p);
       setArrivalEvent('arrived');
       setArrivalOpen(true);
@@ -100,6 +106,11 @@ export default function FacultyViewTest() {
       setArrivedKeys((prev) => {
         const next = new Set(prev);
         next.delete(makeKey(p));
+        return next;
+      });
+      setCanceledKeys((prev) => {
+        const next = new Set(prev);
+        next.add(makeKey(p));
         return next;
       });
       setArrivalPayload(p);
@@ -184,7 +195,7 @@ export default function FacultyViewTest() {
               {rows.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell>
-                    <Checkbox checked={row.arrived || arrivedKeys.has(makeKey(row))} disabled />
+                    <Checkbox checked={canceledKeys.has(makeKey(row)) ? false : (arrivedKeys.has(makeKey(row)) ? true : row.arrived)} disabled />
                   </TableCell>
                   <TableCell>
                     <Checkbox checked={row.seen} onCheckedChange={(c) => onSeenChange(row, !!c)} />
