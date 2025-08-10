@@ -79,56 +79,77 @@ export const ScheduleProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     } catch {}
   }, [schedules]);
 
-  // Auto-clear all entries daily at 7:00 PM (local time) per device
+  // DB-backed sync: load from Supabase and subscribe to realtime
   useEffect(() => {
-    const doClear = () => {
-      setSchedules([]);
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
-        localStorage.setItem(LAST_CLEARED_KEY, String(Date.now()));
-      } catch {}
-    };
-
-    const getToday7pm = () => {
-      const d = new Date();
-      d.setHours(19, 0, 0, 0);
-      return d.getTime();
-    };
-
-    // If the app opens after today's 7 PM and wasn't cleared yet, clear immediately
-    try {
-      const lastCleared = Number(localStorage.getItem(LAST_CLEARED_KEY) || 0);
-      const now = Date.now();
-      const today7pm = getToday7pm();
-      if (now >= today7pm && lastCleared < today7pm) {
-        doClear();
+    const load = async () => {
+      const { data, error } = await supabase
+        .from('schedules')
+        .select('*')
+        .order('created_at', { ascending: true });
+      if (!error && data) {
+        setSchedules(
+          data.map((r: any) => ({
+            id: r.id,
+            residentName: r.resident_name,
+            facultyName: r.faculty_name,
+            day: r.day as Day,
+            clinicTime: r.clinic_time as ClinicTime,
+            appointmentTime: r.appointment_time,
+            patientName: r.patient_name,
+            clinicNumber: r.clinic_number,
+            notes: r.notes ?? undefined,
+            arrived: !!r.arrived,
+            seen: !!r.seen,
+            createdAt: r.created_at,
+          })).sort(sortEntries)
+        );
       }
-    } catch {}
-
-    const msUntilNext7pm = () => {
-      const now = new Date();
-      const next = new Date();
-      next.setHours(19, 0, 0, 0);
-      if (now.getTime() >= next.getTime()) {
-        next.setDate(next.getDate() + 1);
-      }
-      return next.getTime() - now.getTime();
     };
+    load();
 
-    const firstTimeout = setTimeout(() => {
-      doClear();
-      // subsequent clears every 24 hours
-      const daily = setInterval(doClear, 24 * 60 * 60 * 1000);
-      // store interval id on window for cleanup reference
-      (window as any).__ksuDailyClearInterval = daily;
-    }, msUntilNext7pm());
+    const ch = supabase
+      .channel('schema-db-changes')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'schedules' }, (payload: any) => {
+        const r = payload.new;
+        setSchedules((prev) => [...prev, {
+          id: r.id,
+          residentName: r.resident_name,
+          facultyName: r.faculty_name,
+          day: r.day as Day,
+          clinicTime: r.clinic_time as ClinicTime,
+          appointmentTime: r.appointment_time,
+          patientName: r.patient_name,
+          clinicNumber: r.clinic_number,
+          notes: r.notes ?? undefined,
+          arrived: !!r.arrived,
+          seen: !!r.seen,
+          createdAt: r.created_at,
+        }].sort(sortEntries));
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'schedules' }, (payload: any) => {
+        const r = payload.new;
+        setSchedules((prev) => prev.map((e) => e.id === r.id ? {
+          id: r.id,
+          residentName: r.resident_name,
+          facultyName: r.faculty_name,
+          day: r.day as Day,
+          clinicTime: r.clinic_time as ClinicTime,
+          appointmentTime: r.appointment_time,
+          patientName: r.patient_name,
+          clinicNumber: r.clinic_number,
+          notes: r.notes ?? undefined,
+          arrived: !!r.arrived,
+          seen: !!r.seen,
+          createdAt: r.created_at,
+        } : e));
+      })
+      .subscribe();
 
     return () => {
-      clearTimeout(firstTimeout);
-      const daily = (window as any).__ksuDailyClearInterval;
-      if (daily) clearInterval(daily);
+      try { supabase.removeChannel(ch); } catch {}
     };
   }, []);
+
 
   useEffect(() => {
     const ch = channel;
@@ -152,31 +173,57 @@ export const ScheduleProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, [channel]);
 
   const addEntry: ScheduleContextValue["addEntry"] = (entry) => {
-    const newEntry: ScheduleEntry = {
-      id: uuidv4(),
-      arrived: false,
-      seen: false,
-      createdAt: new Date().toISOString(),
-      ...entry,
-    };
-    setSchedules((prev) => [...prev, newEntry].sort(sortEntries));
-    try {
-      channel.send({ type: "broadcast", event: "schedule_added", payload: newEntry });
-    } catch {}
+    void (async () => {
+      try {
+        const { data: userData } = await supabase.auth.getUser();
+        const uid = userData?.user?.id;
+        if (!uid) return;
+        const { data } = await supabase
+          .from('schedules')
+          .insert({
+            user_id: uid,
+            resident_name: entry.residentName,
+            faculty_name: entry.facultyName,
+            day: entry.day,
+            clinic_time: entry.clinicTime,
+            appointment_time: entry.appointmentTime,
+            patient_name: entry.patientName,
+            clinic_number: entry.clinicNumber,
+            notes: entry.notes ?? null,
+          })
+          .select('*')
+          .maybeSingle();
+        if (data) {
+          setSchedules((prev) => {
+            if (prev.some((e) => e.id === data.id)) return prev;
+            return [...prev, {
+              id: data.id,
+              residentName: data.resident_name,
+              facultyName: data.faculty_name,
+              day: data.day as Day,
+              clinicTime: data.clinic_time as ClinicTime,
+              appointmentTime: data.appointment_time,
+              patientName: data.patient_name,
+              clinicNumber: data.clinic_number,
+              notes: data.notes ?? undefined,
+              arrived: !!data.arrived,
+              seen: !!data.seen,
+              createdAt: data.created_at,
+            }].sort(sortEntries);
+          });
+        }
+      } catch {}
+    })();
   };
 
   const toggleArrived = (id: string, value: boolean) => {
     setSchedules((prev) => prev.map((e) => (e.id === id ? { ...e, arrived: value } : e)));
-    try {
-      channel.send({ type: "broadcast", event: "schedule_updated", payload: { id, arrived: value } });
-    } catch {}
+    supabase.from('schedules').update({ arrived: value }).eq('id', id).then(() => {});
   };
 
   const toggleSeen = (id: string, value: boolean) => {
     setSchedules((prev) => prev.map((e) => (e.id === id ? { ...e, seen: value } : e)));
-    try {
-      channel.send({ type: "broadcast", event: "schedule_updated", payload: { id, seen: value } });
-    } catch {}
+    supabase.from('schedules').update({ seen: value }).eq('id', id).then(() => {});
   };
 
   const getFiltered: ScheduleContextValue["getFiltered"] = (filters) => {
