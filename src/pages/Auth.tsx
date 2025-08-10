@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export default function AuthPage() {
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,8 +16,8 @@ export default function AuthPage() {
   const location = useLocation() as any;
 
   useEffect(() => {
-    document.title = mode === "login" ? "Login - KSU Ortho Portal" : "Sign up - KSU Ortho Portal";
-  }, [mode]);
+    document.title = "Login - KSU Ortho Portal";
+  }, []);
 
   const redirectAfterLogin = async () => {
     // Try to send user to the page they came from
@@ -49,27 +49,10 @@ export default function AuthPage() {
     redirectAfterLogin();
   };
 
-  const handleSignup = async () => {
-    setLoading(true);
-    const redirectUrl = `${window.location.origin}/`;
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { emailRedirectTo: redirectUrl },
-    });
-    setLoading(false);
-    if (error) {
-      toast.error(error.message || "Sign up failed");
-      return;
-    }
-    toast.success("Check your email to confirm your account.");
-    setMode("login");
-  };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (mode === "login") await handleLogin();
-    else await handleSignup();
+    await handleLogin();
   };
 
   return (
@@ -77,10 +60,10 @@ export default function AuthPage() {
       <main className="w-full max-w-md">
         <Card>
           <CardHeader>
-            <CardTitle>{mode === "login" ? "Login" : "Create account"}</CardTitle>
+            <CardTitle>Login</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={onSubmit} className="space-y-4" aria-label={mode === "login" ? "Login form" : "Sign up form"}>
+            <form onSubmit={onSubmit} className="space-y-4" aria-label="Login form">
               <div className="space-y-2">
                 <Label htmlFor="email">Email address</Label>
                 <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
@@ -90,23 +73,12 @@ export default function AuthPage() {
                 <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
               </div>
               <Button type="submit" disabled={loading} className="w-full">
-                {loading ? "Please wait..." : mode === "login" ? "Login" : "Sign up"}
+                {loading ? "Please wait..." : "Login"}
               </Button>
             </form>
             <p className="text-xs text-muted-foreground mt-4">
               Default first-time passwords: resident, faculty, admin. Please change immediately after login.
             </p>
-            <div className="text-sm mt-4">
-              {mode === "login" ? (
-                <button className="underline text-primary" onClick={() => setMode("signup")}>
-                  Need an account? Sign up
-                </button>
-              ) : (
-                <button className="underline text-primary" onClick={() => setMode("login")}>
-                  Already have an account? Login
-                </button>
-              )}
-            </div>
           </CardContent>
         </Card>
       </main>
