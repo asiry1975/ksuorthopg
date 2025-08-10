@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RESIDENTS, FACULTY } from "@/context/ScheduleContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -11,12 +13,21 @@ export default function AuthPage() {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<"resident" | "faculty" | "">("");
+  const [selectedName, setSelectedName] = useState("");
   const navigate = useNavigate();
   const location = useLocation() as any;
 
-  useEffect(() => {
+useEffect(() => {
     document.title = mode === "login" ? "Login - KSU Ortho Portal" : "Sign up - KSU Ortho Portal";
+  }, [mode]);
+
+  useEffect(() => {
+    if (mode === "login") {
+      setSelectedRole("");
+      setSelectedName("");
+    }
   }, [mode]);
 
   const redirectAfterLogin = async () => {
@@ -49,13 +60,26 @@ export default function AuthPage() {
     redirectAfterLogin();
   };
 
-  const handleSignup = async () => {
+const handleSignup = async () => {
     setLoading(true);
+    if (!selectedRole) {
+      toast.error("Please select a role.");
+      setLoading(false);
+      return;
+    }
+    if (!selectedName) {
+      toast.error("Please select your name.");
+      setLoading(false);
+      return;
+    }
     const redirectUrl = `${window.location.origin}/`;
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: redirectUrl },
+      options: { 
+        emailRedirectTo: redirectUrl,
+        data: { role: selectedRole, display_name: selectedName }
+      },
     });
     setLoading(false);
     if (error) {
@@ -80,7 +104,37 @@ export default function AuthPage() {
             <CardTitle>{mode === "login" ? "Login" : "Create account"}</CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={onSubmit} className="space-y-4" aria-label={mode === "login" ? "Login form" : "Sign up form"}>
+<form onSubmit={onSubmit} className="space-y-4" aria-label={mode === "login" ? "Login form" : "Sign up form"}>
+              {mode === "signup" && (
+                <>
+                  <div className="space-y-2">
+                    <Label>Role</Label>
+                    <Select value={selectedRole} onValueChange={(v) => { setSelectedRole(v as any); setSelectedName(""); }}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent className="z-50">
+                        <SelectItem value="resident">Resident</SelectItem>
+                        <SelectItem value="faculty">Faculty</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>{selectedRole === "resident" ? "Resident name" : selectedRole === "faculty" ? "Faculty name" : "Name"}</Label>
+                    <Select value={selectedName} onValueChange={setSelectedName} disabled={!selectedRole}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={!selectedRole ? "Select role first" : "Select name"} />
+                      </SelectTrigger>
+                      <SelectContent className="z-50 max-h-64">
+                        {(selectedRole === "resident" ? RESIDENTS : selectedRole === "faculty" ? FACULTY : []).map((n) => (
+                          <SelectItem key={n} value={n}>{n}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="email">Email address</Label>
                 <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
