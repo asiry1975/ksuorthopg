@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { RESIDENTS, FACULTY } from "@/context/ScheduleContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ export default function AuthPage() {
   const [selectedName, setSelectedName] = useState("");
   const navigate = useNavigate();
   const location = useLocation() as any;
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   useEffect(() => {
     document.title = mode === "login" ? "Login - KSU Ortho Portal" : "Sign up - KSU Ortho Portal";
   }, [mode]);
@@ -64,7 +66,7 @@ export default function AuthPage() {
       toast.error(error.message || "Login failed");
       return;
     }
-    toast.success("Logged in. Please change your password on first login.");
+    
     redirectAfterLogin();
   };
   const handleSignup = async () => {
@@ -98,8 +100,7 @@ export default function AuthPage() {
       toast.error(error.message || "Sign up failed");
       return;
     }
-    toast.success("Check your email to confirm your account.");
-    setMode("login");
+    setShowConfirmDialog(true);
   };
   const handleForgotPassword = async () => {
     if (!email) {
@@ -148,7 +149,7 @@ export default function AuthPage() {
                       </SelectContent>
                     </Select>
                   </div>
-
+            
                   <div className="space-y-2">
                     <Label>{selectedRole === "resident" ? "Resident name" : selectedRole === "faculty" ? "Faculty name" : "Name"}</Label>
                     <Select value={selectedName} onValueChange={setSelectedName} disabled={!selectedRole}>
@@ -165,7 +166,7 @@ export default function AuthPage() {
                 <Label htmlFor="email">Email address</Label>
                 <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
               </div>
-            <div className="space-y-2">
+              <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
                 {mode === "login" && <div className="text-right">
@@ -188,6 +189,22 @@ export default function AuthPage() {
             </div>
           </CardContent>
         </Card>
+
+        <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+          <DialogContent className="sm:max-w-[560px] md:max-w-[720px]">
+            <DialogHeader>
+              <DialogTitle>Confirm your email</DialogTitle>
+              <DialogDescription>
+                We sent a confirmation link to {email || "your email"}. Please check your inbox and confirm to finish sign up.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button onClick={() => { setShowConfirmDialog(false); setMode("login"); }}>
+                Back to login
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>;
 }

@@ -18,16 +18,23 @@ export default function FacultyViewTest() {
 
   useEffect(() => {
     document.title = "Faculty View Test";
-    // Pull faculty name from login; fallback to email for now
-    supabase.auth.getUser().then(({ data }) => {
-      const user = data.user;
-      if (user) {
-        const name = (user.user_metadata as any)?.full_name || (user.user_metadata as any)?.name || user.email || "";
-        setFacultyName(name);
-      }
-    }).catch(() => {
-      // ignore errors for test page
-    });
+    // Pull faculty name from login via Supabase for test page
+    supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        const user = data.user;
+        if (user) {
+          const name =
+            (user.user_metadata as any)?.display_name ||
+            (user.user_metadata as any)?.full_name ||
+            (user.user_metadata as any)?.name ||
+            user.email || "";
+          setFacultyName(name);
+        }
+      })
+      .catch(() => {
+        // ignore errors for test page
+      });
   }, []);
 
   const rows = useMemo(() => {

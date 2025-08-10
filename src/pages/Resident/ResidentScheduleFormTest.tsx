@@ -65,7 +65,6 @@ export default function ResidentScheduleFormTest() {
       <main className="container mx-auto p-4">
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid grid-cols-1 gap-4">
-            {/* Resident from login (read-only) */}
             <div className="space-y-2">
               <Label>Resident</Label>
               <Input value={residentName} readOnly aria-readonly placeholder="Resident from login" />
