@@ -8,7 +8,6 @@ export default function FacultyHome() {
     { to: "/coming-soon", icon: Sparkles, label: "Coming Soon" },
     { to: "/coming-soon", icon: Sparkles, label: "Coming Soon" },
     { to: "/coming-soon", icon: Sparkles, label: "Coming Soon" },
-    { to: "/coming-soon", icon: Sparkles, label: "Coming Soon" },
   ];
 
   return (
