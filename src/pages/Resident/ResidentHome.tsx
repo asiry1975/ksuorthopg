@@ -5,7 +5,7 @@ import AppHeader from "@/components/AppHeader";
 export default function ResidentHome() {
   const items = [
     { to: "/resident/schedule", icon: ClipboardList, label: "Resident Schedule Form" },
-    { to: "/resident/schedule", icon: ClipboardList, label: "Resident Schedule Form Test" },
+    { to: "/resident/schedule-test", icon: ClipboardList, label: "Resident Schedule Form Test" },
     { to: "/resident/view", icon: Eye, label: "Resident View" },
     { to: "/coming-soon", icon: Sparkles, label: "Coming Soon" },
     { to: "/coming-soon", icon: Sparkles, label: "Coming Soon" },

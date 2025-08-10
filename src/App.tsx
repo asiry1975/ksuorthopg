@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ResidentHome from "./pages/Resident/ResidentHome";
 import ResidentScheduleForm from "./pages/Resident/ResidentScheduleForm";
+import ResidentScheduleFormTest from "./pages/Resident/ResidentScheduleFormTest";
 import ResidentView from "./pages/Resident/ResidentView";
 import FacultyHome from "./pages/Faculty/FacultyHome";
 import FacultyView from "./pages/Faculty/FacultyView";
@@ -31,6 +32,7 @@ const App = () => (
 
               <Route path="/resident" element={<ResidentHome />} />
               <Route path="/resident/schedule" element={<ResidentScheduleForm />} />
+              <Route path="/resident/schedule-test" element={<ResidentScheduleFormTest />} />
               <Route path="/resident/view" element={<ResidentView />} />
 
               <Route path="/faculty" element={<FacultyHome />} />
