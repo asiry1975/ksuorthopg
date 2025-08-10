@@ -16,6 +16,9 @@ import ProgramDirectorHome from "./pages/ProgramDirector/ProgramDirectorHome";
 import ComingSoonPage from "./pages/ComingSoon";
 import { ScheduleProvider } from "./context/ScheduleContext";
 import AppFooter from "./components/AppFooter";
+import AuthPage from "./pages/Auth";
+import { AuthProvider } from "./context/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 
 const queryClient = new QueryClient();
@@ -26,32 +29,59 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <ScheduleProvider>
-          <div className="relative z-10">
-            <Routes>
-              <Route path="/" element={<Index />} />
+        <AuthProvider>
+          <ScheduleProvider>
+            <div className="relative z-10">
+              <Routes>
+                <Route path="/auth" element={<AuthPage />} />
+                <Route path="/" element={<Index />} />
 
-              <Route path="/resident" element={<ResidentHome />} />
-              <Route path="/resident/schedule" element={<ResidentScheduleForm />} />
-              <Route path="/resident/schedule-test" element={<ResidentScheduleFormTest />} />
-              <Route path="/resident/view" element={<ResidentView />} />
+                <Route
+                  path="/resident"
+                  element={<ProtectedRoute allowedRoles={["resident"]}><ResidentHome /></ProtectedRoute>}
+                />
+                <Route
+                  path="/resident/schedule"
+                  element={<ProtectedRoute allowedRoles={["resident"]}><ResidentScheduleForm /></ProtectedRoute>}
+                />
+                <Route
+                  path="/resident/schedule-test"
+                  element={<ProtectedRoute allowedRoles={["resident"]}><ResidentScheduleFormTest /></ProtectedRoute>}
+                />
+                <Route
+                  path="/resident/view"
+                  element={<ProtectedRoute allowedRoles={["resident"]}><ResidentView /></ProtectedRoute>}
+                />
 
-              <Route path="/faculty" element={<FacultyHome />} />
-              <Route path="/faculty/view" element={<FacultyView />} />
-              <Route path="/faculty/view-test" element={<FacultyViewTest />} />
+                <Route
+                  path="/faculty"
+                  element={<ProtectedRoute allowedRoles={["faculty"]}><FacultyHome /></ProtectedRoute>}
+                />
+                <Route
+                  path="/faculty/view"
+                  element={<ProtectedRoute allowedRoles={["faculty"]}><FacultyView /></ProtectedRoute>}
+                />
+                <Route
+                  path="/faculty/view-test"
+                  element={<ProtectedRoute allowedRoles={["faculty"]}><FacultyViewTest /></ProtectedRoute>}
+                />
 
-              <Route path="/program-director" element={<ProgramDirectorHome />} />
+                <Route
+                  path="/program-director"
+                  element={<ProtectedRoute allowedRoles={["program_director"]}><ProgramDirectorHome /></ProtectedRoute>}
+                />
 
-              <Route path="/coming-soon" element={<ComingSoonPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                <Route path="/coming-soon" element={<ComingSoonPage />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              
+              <AppFooter />
+            </div>
+            {/* Global background image */}
             
-            <AppFooter />
-          </div>
-          {/* Global background image */}
-          
-        </ScheduleProvider>
+          </ScheduleProvider>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
