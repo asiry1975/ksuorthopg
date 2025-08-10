@@ -17,7 +17,7 @@ export function ProtectedRoute({ allowedRoles, children }: ProtectedRouteProps) 
     return <Navigate to="/auth" replace state={{ from: location }} />;
   }
 
-  if (allowedRoles && !roles.some((r) => allowedRoles.includes(r))) {
+  if (allowedRoles && !roles.includes("admin") && !roles.some((r) => allowedRoles.includes(r))) {
     return <Navigate to="/" replace />;
   }
 

@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "resident" | "faculty" | "program_director" | string;
+export type AppRole = "resident" | "faculty" | "program_director" | "admin" | string;
 
 type AuthContextType = {
   user: User | null;
@@ -20,6 +20,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const deriveRolesFromMetadata = (u: User | null): AppRole[] => {
+    const raw = (u as any)?.user_metadata?.roles ?? (u as any)?.user_metadata?.role;
+    if (Array.isArray(raw)) return raw.map((r: any) => String(r) as AppRole);
+    if (raw) return [String(raw) as AppRole];
+    return [];
+  };
+
   // Fetch roles for the current user
   const loadRoles = async (uid: string) => {
     const { data, error } = await supabase
@@ -27,10 +34,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .select("role")
       .eq("user_id", uid);
 
-    if (!error && data) {
+    if (!error && Array.isArray(data) && data.length > 0) {
       setRoles(data.map((r) => String(r.role) as AppRole));
-    } else {
-      setRoles([]);
     }
   };
 
@@ -39,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: listener } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s);
       setUser(s?.user ?? null);
-
+      setRoles(deriveRolesFromMetadata(s?.user ?? null));
       if (s?.user) {
         // Defer supabase calls to avoid deadlocks in the callback
         setTimeout(() => {
@@ -55,6 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setUser(data.session?.user ?? null);
+      setRoles(deriveRolesFromMetadata(data.session?.user ?? null));
       if (data.session?.user) {
         loadRoles(data.session.user.id).finally(() => setIsLoading(false));
       } else {
