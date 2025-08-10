@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { supabase } from "@/integrations/supabase/client";
 
 export type Day = "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday";
 export type ClinicTime = "AM" | "PM";
@@ -63,6 +64,7 @@ function sortEntries(a: ScheduleEntry, b: ScheduleEntry): number {
 
 export const ScheduleProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [schedules, setSchedules] = useState<ScheduleEntry[]>([]);
+  const [channel] = useState(() => supabase.channel("schedules"));
 
   useEffect(() => {
     try {
@@ -128,6 +130,26 @@ export const ScheduleProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     };
   }, []);
 
+  useEffect(() => {
+    const ch = channel;
+    ch.on('broadcast', { event: 'schedule_added' }, (payload: any) => {
+      const p = (payload?.payload) || payload;
+      if (!p?.id) return;
+      setSchedules((prev) => {
+        if (prev.some((e) => e.id === p.id)) return prev;
+        return [...prev, p as ScheduleEntry].sort(sortEntries);
+      });
+    });
+    ch.on('broadcast', { event: 'schedule_updated' }, (payload: any) => {
+      const p = (payload?.payload) || payload;
+      if (!p?.id) return;
+      setSchedules((prev) => prev.map((e) => (e.id === p.id ? { ...e, ...(p as Partial<ScheduleEntry>) } : e)));
+    });
+    ch.subscribe();
+    return () => {
+      try { ch.unsubscribe(); } catch {}
+    };
+  }, [channel]);
 
   const addEntry: ScheduleContextValue["addEntry"] = (entry) => {
     const newEntry: ScheduleEntry = {
@@ -138,14 +160,23 @@ export const ScheduleProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       ...entry,
     };
     setSchedules((prev) => [...prev, newEntry].sort(sortEntries));
+    try {
+      channel.send({ type: "broadcast", event: "schedule_added", payload: newEntry });
+    } catch {}
   };
 
   const toggleArrived = (id: string, value: boolean) => {
     setSchedules((prev) => prev.map((e) => (e.id === id ? { ...e, arrived: value } : e)));
+    try {
+      channel.send({ type: "broadcast", event: "schedule_updated", payload: { id, arrived: value } });
+    } catch {}
   };
 
   const toggleSeen = (id: string, value: boolean) => {
     setSchedules((prev) => prev.map((e) => (e.id === id ? { ...e, seen: value } : e)));
+    try {
+      channel.send({ type: "broadcast", event: "schedule_updated", payload: { id, seen: value } });
+    } catch {}
   };
 
   const getFiltered: ScheduleContextValue["getFiltered"] = (filters) => {
