@@ -8,11 +8,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Menu, LogOut } from "lucide-react";
+import { Menu, LogOut, LogIn } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 export default function GlobalQuickLinks() {
-  const { signOut } = useAuth();
+const { signOut, session } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -48,9 +48,15 @@ export default function GlobalQuickLinks() {
             <Link to="/program-director">Program Director</Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={handleSignOut} className="text-destructive focus:text-destructive">
-            <LogOut className="mr-2 h-4 w-4" /> Sign out
-          </DropdownMenuItem>
+{session ? (
+            <DropdownMenuItem onSelect={handleSignOut} className="text-destructive focus:text-destructive">
+              <LogOut className="mr-2 h-4 w-4" /> Sign out
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem asChild>
+              <Link to="/auth"><span className="flex items-center"><LogIn className="mr-2 h-4 w-4" /> Sign in</span></Link>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

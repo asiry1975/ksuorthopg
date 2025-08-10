@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 export default function AppHeader({ title }: { title: string }) {
   const navigate = useNavigate();
-  const { signOut } = useAuth();
+  const { signOut, session } = useAuth();
   const handleSignOut = async () => {
     await signOut();
     navigate("/auth", { replace: true });
@@ -34,9 +34,15 @@ export default function AppHeader({ title }: { title: string }) {
           />
           <div dir="rtl" className="flex items-center gap-2">
             <GlobalQuickLinks />
-            <Button variant="outline" size="sm" onClick={handleSignOut} aria-label="Sign out">
-              Sign out
-            </Button>
+{session ? (
+              <Button variant="outline" size="sm" onClick={handleSignOut} aria-label="Sign out">
+                Sign out
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" onClick={() => navigate("/auth")} aria-label="Sign in">
+                Sign in
+              </Button>
+            )}
           </div>
         </div>
       </div>
