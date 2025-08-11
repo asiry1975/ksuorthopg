@@ -15,8 +15,6 @@ export default function ProfilePage() {
   const initialName = useMemo(() => session?.user?.user_metadata?.name as string || session?.user?.user_metadata?.full_name as string || session?.user?.user_metadata?.display_name as string || "", [session]);
   const [name, setName] = useState(initialName);
   const [email, setEmail] = useState(session?.user?.email ?? "");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const roleTitle = useMemo(
     () => (roles.includes("faculty") ? "Faculty Profile" : roles.includes("resident") ? "Resident Profile" : "Profile"),
@@ -50,31 +48,12 @@ export default function ProfilePage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session) return;
-    if (password && password.length < 6) {
-      toast({
-        title: "Password too short",
-        description: "Use at least 6 characters.",
-        variant: "destructive"
-      });
-      return;
-    }
-    if (password && password !== confirmPassword) {
-      toast({
-        title: "Passwords do not match",
-        description: "Please re-enter the same password.",
-        variant: "destructive"
-      });
-      return;
-    }
     setIsSaving(true);
     try {
       const redirectUrl = `${window.location.origin}/`;
       const updatePayload: Parameters<typeof supabase.auth.updateUser>[0] = {
-        data: name ? {
-          name
-        } : undefined,
-        email: email || undefined,
-        password: password || undefined
+        data: name ? { name } : undefined,
+        email: email || undefined
       } as any;
       const {
         error
@@ -109,21 +88,15 @@ export default function ProfilePage() {
               <form onSubmit={handleSave} className="space-y-4">
                 <div className="grid gap-2">
                   <Label htmlFor="name">Name</Label>
-                  <Input id="name" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" />
+                  <Input id="name" value={name} placeholder="Your name" readOnly disabled />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="name@example.com" />
+                  <Input id="email" type="email" value={email} placeholder="name@example.com" readOnly disabled />
                 </div>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="password">New password</Label>
-                    <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" autoComplete="new-password" />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="confirmPassword">Confirm password</Label>
-                    <Input id="confirmPassword" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="••••••••" autoComplete="new-password" />
-                  </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="role">Role</Label>
+                  <Input id="role" value={roles.join(", ")} readOnly disabled />
                 </div>
                 <div className="pt-2">
                   <Button type="submit" disabled={isSaving} aria-label="Save profile changes">
