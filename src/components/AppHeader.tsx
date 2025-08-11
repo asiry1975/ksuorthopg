@@ -1,24 +1,20 @@
 import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import GlobalQuickLinks from "@/components/GlobalQuickLinks";
-import { Button } from "@/components/ui/button";
+
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/AuthContext";
 export default function AppHeader({ title }: { title: string }) {
   const navigate = useNavigate();
-  const { signOut, session } = useAuth();
+  const { session } = useAuth();
   const displayName = (session?.user?.user_metadata?.name as string)
     || (session?.user?.user_metadata?.full_name as string)
     || (session?.user?.user_metadata?.display_name as string)
     || (session?.user?.email as string)
     || "Account";
-  const handleSignOut = async () => {
-    await signOut();
-    navigate("/auth", { replace: true });
-  };
   return (
     <>
-      <header dir="rtl" className="sticky top-0 z-40 bg-background border-b shadow-sm">
+      <header dir="rtl" className="sticky top-0 z-40 bg-background border-b shadow-sm" role="banner">
         <div className="container mx-auto flex flex-row-reverse items-center h-12 gap-2 px-3">
           <button
             aria-label="Go back"
@@ -40,17 +36,14 @@ export default function AppHeader({ title }: { title: string }) {
           />
           <div dir="rtl" className="flex items-center gap-2">
             <GlobalQuickLinks />
-            {session ? (
-              <>
-                <Badge variant="secondary" aria-label="Signed in user">{displayName}</Badge>
-                <Button variant="outline" size="sm" onClick={handleSignOut} aria-label="Sign out">
-                  Sign out
-                </Button>
-              </>
-            ) : (
-              <Button variant="outline" size="sm" onClick={() => navigate("/auth")} aria-label="Sign in">
-                Sign in
-              </Button>
+            {session && (
+              <Badge
+                variant="outline"
+                className="bg-background"
+                aria-label="Signed in user"
+              >
+                {displayName}
+              </Badge>
             )}
           </div>
         </div>
