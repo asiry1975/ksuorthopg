@@ -124,6 +124,41 @@ export default function FacultyViewTest() {
     };
   }, [facultyName]);
 
+  // Fallback realtime via DB updates to ensure Arrived column reflects without page refresh
+  useEffect(() => {
+    if (!facultyName) return;
+    const ch = supabase
+      .channel('schedules-db-sync')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'schedules' }, (payload: any) => {
+        const r = payload.new;
+        if (!r) return;
+        if (String(r.faculty_name || '').toLowerCase() !== String(facultyName).toLowerCase()) return;
+        const key = makeKey({
+          facultyName: r.faculty_name,
+          residentName: r.resident_name,
+          clinicNumber: r.clinic_number,
+          patientName: r.patient_name,
+          appointmentTime: r.appointment_time,
+          day: r.day,
+          clinicTime: r.clinic_time,
+        });
+        setArrivedKeys((prev) => {
+          const next = new Set(prev);
+          if (r.arrived) next.add(key); else next.delete(key);
+          return next;
+        });
+        setCanceledKeys((prev) => {
+          const next = new Set(prev);
+          next.delete(key);
+          return next;
+        });
+      });
+    ch.subscribe();
+    return () => {
+      try { ch.unsubscribe(); } catch {}
+    };
+  }, [facultyName]);
+
   const rows = useMemo(() => {
     const filters = {
       facultyName: facultyName || undefined,
