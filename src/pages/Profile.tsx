@@ -110,7 +110,7 @@ export default function ProfilePage() {
             <div className="mt-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Assessment Results</CardTitle>
+                  <CardTitle>Performance</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">Coming soon.</p>
