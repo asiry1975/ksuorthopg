@@ -8,9 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 export default function ProfilePage() {
-  const {
-    session
-  } = useAuth();
+  const { session, roles } = useAuth();
   const {
     toast
   } = useToast();
@@ -20,6 +18,11 @@ export default function ProfilePage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const roleTitle = useMemo(
+    () => (roles.includes("faculty") ? "Faculty Profile" : roles.includes("resident") ? "Resident Profile" : "Profile"),
+    [roles]
+  );
+
   useEffect(() => {
     setName(initialName);
     setEmail(session?.user?.email ?? "");
@@ -99,7 +102,7 @@ export default function ProfilePage() {
         <section className="max-w-2xl mx-auto">
           <Card>
             <CardHeader>
-              <CardTitle>Account settings</CardTitle>
+              <CardTitle>{roleTitle}</CardTitle>
               
             </CardHeader>
             <CardContent>
