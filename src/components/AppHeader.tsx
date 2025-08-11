@@ -39,8 +39,12 @@ export default function AppHeader({ title }: { title: string }) {
             {session && (
               <Badge
                 variant="outline"
-                className="bg-background"
-                aria-label="Signed in user"
+                className="bg-background cursor-pointer hover:bg-accent"
+                aria-label="Open profile"
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate('/profile')}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate('/profile') }}
               >
                 {displayName}
               </Badge>

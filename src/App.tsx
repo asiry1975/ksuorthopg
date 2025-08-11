@@ -20,6 +20,7 @@ import AuthPage from "./pages/Auth";
 import PasswordRecovery from "./pages/PasswordRecovery";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import ProfilePage from "./pages/Profile";
 
 
 const queryClient = new QueryClient();
@@ -74,6 +75,7 @@ const App = () => (
                 />
 
                 <Route path="/coming-soon" element={<ComingSoonPage />} />
+                <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
