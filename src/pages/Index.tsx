@@ -45,7 +45,7 @@ const Index = () => {
         <h1 className="text-2xl font-bold text-foreground">KSU Orthodontic Graduate Programs -  Faculty &amp; Residents Portal </h1>
         <p className="text-sm italic text-foreground mt-2">Your centralized hub for clinical schedules, academic tools, and communication between faculty and residents</p>
       </header>
-      <nav className="container mx-auto px-4 pb-2 text-right"><Link to="/auth" className="underline text-primary">Login</Link></nav>
+      
       <main className="container mx-auto p-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <AccessGuardLink to="/resident" requiredRoles={["resident"]} label="Resident" className="rounded-xl border bg-card p-6 shadow-sm active:scale-[0.98] transition">
