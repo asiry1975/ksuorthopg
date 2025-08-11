@@ -2,10 +2,16 @@ import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import GlobalQuickLinks from "@/components/GlobalQuickLinks";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/AuthContext";
 export default function AppHeader({ title }: { title: string }) {
   const navigate = useNavigate();
   const { signOut, session } = useAuth();
+  const displayName = (session?.user?.user_metadata?.name as string)
+    || (session?.user?.user_metadata?.full_name as string)
+    || (session?.user?.user_metadata?.display_name as string)
+    || (session?.user?.email as string)
+    || "Account";
   const handleSignOut = async () => {
     await signOut();
     navigate("/auth", { replace: true });
@@ -34,10 +40,13 @@ export default function AppHeader({ title }: { title: string }) {
           />
           <div dir="rtl" className="flex items-center gap-2">
             <GlobalQuickLinks />
-{session ? (
-              <Button variant="outline" size="sm" onClick={handleSignOut} aria-label="Sign out">
-                Sign out
-              </Button>
+            {session ? (
+              <>
+                <Badge variant="secondary" aria-label="Signed in user">{displayName}</Badge>
+                <Button variant="outline" size="sm" onClick={handleSignOut} aria-label="Sign out">
+                  Sign out
+                </Button>
+              </>
             ) : (
               <Button variant="outline" size="sm" onClick={() => navigate("/auth")} aria-label="Sign in">
                 Sign in
