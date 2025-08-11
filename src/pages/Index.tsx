@@ -6,7 +6,7 @@ import AccessGuardLink from "@/components/AccessGuardLink";
 const Index = () => {
   useEffect(() => {
     // Inject manifest, icons, and theme color into <head>
-    const MANIFEST_URL = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/manifest.json';
+    const MANIFEST_URL = '/manifest.webmanifest';
     const ICON_180  = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icons/icon-180.png';
     const ICON_192  = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icons/icon-192.png';
     const ICON_512  = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icons/icon-512.png';

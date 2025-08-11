@@ -1,0 +1,30 @@
+{
+  "name": "KSU Orthodontic Graduate Programs",
+  "short_name": "KSU Ortho",
+  "description": "Mobile tools for KSU Orthodontic residents and faculty: schedule form and real-time views.",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#004B87",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
