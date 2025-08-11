@@ -152,6 +152,13 @@ export default function FacultyViewTest() {
           next.delete(key);
           return next;
         });
+      })
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'schedules' }, (payload: any) => {
+        const r = payload.new;
+        if (!r) return;
+        if (String(r.faculty_name || '').toLowerCase() !== String(facultyName).toLowerCase()) return;
+        // Force-refresh the page when a new schedule is submitted for this faculty
+        try { window.location.reload(); } catch {}
       });
     ch.subscribe();
     return () => {
