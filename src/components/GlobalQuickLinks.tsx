@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,11 +9,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Menu, LogOut, LogIn } from "lucide-react";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useAuth } from "@/context/AuthContext";
 
 export default function GlobalQuickLinks() {
-const { signOut, session } = useAuth();
+const { signOut, session, roles } = useAuth();
   const navigate = useNavigate();
+
+  const [deniedOpen, setDeniedOpen] = useState(false);
+  const [deniedTarget, setDeniedTarget] = useState<string | null>(null);
+
+  const hasAccess = (required?: string[]) => {
+    if (!required || required.length === 0) return true;
+    return roles.includes("admin") || roles.some((r) => required.includes(r));
+  };
+
+  const handleNavigate = (path: string, label: string, requiredRoles?: string[]) => {
+    if (hasAccess(requiredRoles)) {
+      navigate(path);
+    } else {
+      setDeniedTarget(label);
+      setDeniedOpen(true);
+    }
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -35,17 +54,17 @@ const { signOut, session } = useAuth();
         >
           <DropdownMenuLabel>Quick Links</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link to="/">Home</Link>
+          <DropdownMenuItem onSelect={() => handleNavigate("/", "Home")}>
+            Home
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/resident">Resident</Link>
+          <DropdownMenuItem onSelect={() => handleNavigate("/resident", "Resident", ["resident"]) }>
+            Resident
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/faculty">Faculty</Link>
+          <DropdownMenuItem onSelect={() => handleNavigate("/faculty", "Faculty", ["faculty"]) }>
+            Faculty
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/program-director">Program Director</Link>
+          <DropdownMenuItem onSelect={() => handleNavigate("/program-director", "Program Director", ["program_director"]) }>
+            Program Director
           </DropdownMenuItem>
           <DropdownMenuSeparator />
 {session ? (
@@ -53,12 +72,25 @@ const { signOut, session } = useAuth();
               <LogOut className="mr-2 h-4 w-4" /> Sign out
             </DropdownMenuItem>
           ) : (
-            <DropdownMenuItem asChild>
-              <Link to="/auth"><span className="flex items-center"><LogIn className="mr-2 h-4 w-4" /> Sign in</span></Link>
+            <DropdownMenuItem onSelect={() => navigate("/auth")}> 
+              <span className="flex items-center"><LogIn className="mr-2 h-4 w-4" /> Sign in</span>
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+      <Dialog open={deniedOpen} onOpenChange={setDeniedOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Access restricted</DialogTitle>
+            <DialogDescription>
+              You do not have permission to access {deniedTarget ?? "this section"}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end">
+            <Button onClick={() => setDeniedOpen(false)}>Close</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
