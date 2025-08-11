@@ -1,8 +1,44 @@
 import { GraduationCap, Users, UserSquare2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 import AppHeader from "@/components/AppHeader";
 import AccessGuardLink from "@/components/AccessGuardLink";
 const Index = () => {
+  useEffect(() => {
+    // Inject manifest, icons, and theme color into <head>
+    const MANIFEST_URL = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/manifest.json';
+    const ICON_180  = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icons/icon-180.png';
+    const ICON_192  = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icons/icon-192.png';
+    const ICON_512  = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icons/icon-512.png';
+    const ICON_512_MASKABLE = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icons/icon-512-maskable.png';
+    const THEME_COLOR = '#004B87'; // KSU blue
+
+    // Manifest
+    const m = document.createElement('link');
+    m.rel = 'manifest';
+    m.href = MANIFEST_URL;
+    document.head.appendChild(m);
+
+    // iOS apple-touch icon
+    const i = document.createElement('link');
+    i.rel = 'apple-touch-icon';
+    i.href = ICON_180;
+    document.head.appendChild(i);
+
+    // Favicons / Android / Web
+    [ICON_192, ICON_512, ICON_512_MASKABLE].forEach((url) => {
+      const link = document.createElement('link');
+      link.rel = 'icon';
+      link.href = url;
+      document.head.appendChild(link);
+    });
+
+    // Theme color
+    const t = document.createElement('meta');
+    t.name = 'theme-color';
+    t.content = THEME_COLOR;
+    document.head.appendChild(t);
+  }, []);
   return <div className="min-h-screen relative">
       <AppHeader title="Home" />
       <header className="pt-8 pb-6 text-center">
