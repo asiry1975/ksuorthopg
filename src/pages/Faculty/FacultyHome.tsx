@@ -5,7 +5,7 @@ import AppHeader from "@/components/AppHeader";
 export default function FacultyHome() {
   const items = [
     
-    { to: "/faculty/view-test", icon: Eye, label: "Faculty View Test" },
+    { to: "/faculty/view-test", icon: Eye, label: "Faculty view" },
     { to: "/coming-soon", icon: Sparkles, label: "Coming Soon" },
     { to: "/coming-soon", icon: Sparkles, label: "Coming Soon" },
     { to: "/coming-soon", icon: Sparkles, label: "Coming Soon" },
