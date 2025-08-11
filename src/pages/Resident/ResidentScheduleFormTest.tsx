@@ -17,7 +17,7 @@ export default function ResidentScheduleFormTest() {
 
   // Default to a placeholder until auth is wired up; will be replaced by logged-in resident's name
   const [residentName, setResidentName] = useState<string>("Test Resident");
-  const [facultyName, setFacultyName] = useState(FACULTY[0] ?? "");
+  const [facultyName, setFacultyName] = useState<string | undefined>(undefined);
   const [day, setDay] = useState(DAYS[0]);
   const [clinicTime, setClinicTime] = useState(CLINIC_TIMES[0]);
   const [appointmentTime, setAppointmentTime] = useState(APPOINTMENT_TIMES[0]);
@@ -53,6 +53,9 @@ export default function ResidentScheduleFormTest() {
     setPatientName("");
     setClinicNumber("");
     setNotes("");
+    setTouchedPatientName(false);
+    setTouchedClinicNumber(false);
+    setShowErrors(false);
   };
 
   const isMissingPatient = patientName.trim().length === 0;
@@ -74,7 +77,7 @@ export default function ResidentScheduleFormTest() {
               <Label>Faculty</Label>
               <Select value={facultyName} onValueChange={setFacultyName}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select faculty" />
+                  <SelectValue placeholder="Choose Faculty Name" />
                 </SelectTrigger>
                 <SelectContent className="z-50">
                   {FACULTY.map((f) => (
