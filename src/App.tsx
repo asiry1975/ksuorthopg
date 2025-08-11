@@ -6,11 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ResidentHome from "./pages/Resident/ResidentHome";
-import ResidentScheduleForm from "./pages/Resident/ResidentScheduleForm";
+
 import ResidentScheduleFormTest from "./pages/Resident/ResidentScheduleFormTest";
 import ResidentView from "./pages/Resident/ResidentView";
 import FacultyHome from "./pages/Faculty/FacultyHome";
-import FacultyView from "./pages/Faculty/FacultyView";
+
 import FacultyViewTest from "./pages/Faculty/FacultyViewTest";
 import ProgramDirectorHome from "./pages/ProgramDirector/ProgramDirectorHome";
 import ComingSoonPage from "./pages/ComingSoon";
@@ -46,10 +46,6 @@ const App = () => (
                   element={<ProtectedRoute allowedRoles={["resident"]}><ResidentHome /></ProtectedRoute>}
                 />
                 <Route
-                  path="/resident/schedule"
-                  element={<ProtectedRoute allowedRoles={["resident"]}><ResidentScheduleForm /></ProtectedRoute>}
-                />
-                <Route
                   path="/resident/schedule-test"
                   element={<ProtectedRoute allowedRoles={["resident"]}><ResidentScheduleFormTest /></ProtectedRoute>}
                 />
@@ -65,10 +61,6 @@ const App = () => (
                 <Route
                   path="/faculty"
                   element={<ProtectedRoute allowedRoles={["faculty"]}><FacultyHome /></ProtectedRoute>}
-                />
-                <Route
-                  path="/faculty/view"
-                  element={<ProtectedRoute allowedRoles={["faculty"]}><FacultyView /></ProtectedRoute>}
                 />
                 <Route
                   path="/faculty/view-test"
