@@ -106,6 +106,18 @@ export default function ProfilePage() {
               </form>
             </CardContent>
           </Card>
+          {roles.includes("resident") && (
+            <div className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Assessment Results</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Coming soon.</p>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </section>
       </main>
     </div>;
