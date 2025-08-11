@@ -14,6 +14,8 @@ import FacultyView from "./pages/Faculty/FacultyView";
 import FacultyViewTest from "./pages/Faculty/FacultyViewTest";
 import ProgramDirectorHome from "./pages/ProgramDirector/ProgramDirectorHome";
 import ComingSoonPage from "./pages/ComingSoon";
+import ResidentProfile from "./pages/Resident/ResidentProfile";
+import FacultyProfile from "./pages/Faculty/FacultyProfile";
 import { ScheduleProvider } from "./context/ScheduleContext";
 import AppFooter from "./components/AppFooter";
 import AuthPage from "./pages/Auth";
@@ -55,7 +57,11 @@ const App = () => (
                   path="/resident/view"
                   element={<ProtectedRoute allowedRoles={["resident"]}><ResidentView /></ProtectedRoute>}
                 />
-
+                <Route
+                  path="/resident/profile"
+                  element={<ProtectedRoute allowedRoles={["resident"]}><ResidentProfile /></ProtectedRoute>}
+                />
+                
                 <Route
                   path="/faculty"
                   element={<ProtectedRoute allowedRoles={["faculty"]}><FacultyHome /></ProtectedRoute>}
@@ -67,6 +73,10 @@ const App = () => (
                 <Route
                   path="/faculty/view-test"
                   element={<ProtectedRoute allowedRoles={["faculty"]}><FacultyViewTest /></ProtectedRoute>}
+                />
+                <Route
+                  path="/faculty/profile"
+                  element={<ProtectedRoute allowedRoles={["faculty"]}><FacultyProfile /></ProtectedRoute>}
                 />
 
                 <Route

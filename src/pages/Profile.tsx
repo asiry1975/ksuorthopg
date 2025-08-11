@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
-export default function ProfilePage() {
+export default function ProfilePage({ title = "Profile" }: { title?: string }) {
   const { session } = useAuth();
   const { toast } = useToast();
 
@@ -32,7 +32,7 @@ export default function ProfilePage() {
 
   // Basic SEO for SPA
   useEffect(() => {
-    document.title = "Profile | KSU Orthodontic Portal";
+    document.title = `${title} | KSU Orthodontic Portal`;
     const desc = "Manage your profile: update name, email, and password.";
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
@@ -87,7 +87,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader title="Profile" />
+      <AppHeader title={title} />
       <main className="container mx-auto px-4 py-6">
         <section className="max-w-2xl mx-auto">
           <Card>
@@ -99,12 +99,13 @@ export default function ProfilePage() {
               <form onSubmit={handleSave} className="space-y-4">
                 <div className="grid gap-2">
                   <Label htmlFor="name">Name</Label>
-                  <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" />
+                  <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" disabled readOnly />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" />
+                  <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" disabled readOnly />
                 </div>
+                <h2 className="text-base font-semibold">Password Change</h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="grid gap-2">
                     <Label htmlFor="password">New password</Label>
