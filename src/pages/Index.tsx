@@ -7,9 +7,9 @@ const Index = () => {
   useEffect(() => {
     // Inject manifest, icons, and theme color into <head>
     const MANIFEST_URL = '/manifest.webmanifest';
-    const ICON_180  = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icon/icon-180.png';
-    const ICON_192  = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icon/icon-192.png';
-    const ICON_512  = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icon/icon-512.png';
+    const ICON_180 = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icon/icon-180.png';
+    const ICON_192 = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icon/icon-192.png';
+    const ICON_512 = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icon/icon-512.png';
     const ICON_512_MASKABLE = 'https://sfxifyrtdyndjfiszoyk.supabase.co/storage/v1/object/public/pwa/icon/icon-512-maskable.png';
     const THEME_COLOR = '#004B87'; // KSU blue
 
@@ -26,7 +26,7 @@ const Index = () => {
     document.head.appendChild(i);
 
     // Favicons / Android / Web
-    [ICON_192, ICON_512, ICON_512_MASKABLE].forEach((url) => {
+    [ICON_192, ICON_512, ICON_512_MASKABLE].forEach(url => {
       const link = document.createElement('link');
       link.rel = 'icon';
       link.href = url;
@@ -42,8 +42,8 @@ const Index = () => {
   return <div className="min-h-screen relative">
       <AppHeader title="Home" />
       <header className="pt-8 pb-6 text-center">
-        <h1 className="text-2xl font-bold text-foreground">KSU Orthodontic Graduate Programs -  Faculty &amp; Residents Portal </h1>
-        <p className="text-sm italic text-foreground mt-2">Your centralized hub for clinical schedules, academic tools, and communication between faculty and residents</p>
+        <h1 className="text-2xl font-bold text-gray-50">KSU Orthodontic Graduate Programs -  Faculty &amp; Residents Portal </h1>
+        <p className="text-sm italic mt-2 font-semibold text-gray-50">Your centralized hub for clinical schedules, academic tools, and communication between faculty and residents</p>
       </header>
       
       <main className="container mx-auto p-4">
