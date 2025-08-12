@@ -23,16 +23,20 @@ export default function AppHeader({
         </div>
       </header>
       <div className="container mx-auto px-3 py-2">
-        <div className="flex items-center justify-between">
-          <img src="/lovable-uploads/c233c4b5-45bf-486c-96a0-cf5049f9e2b0.png" alt="King Saud University logo" className="h-40 w-auto select-none" loading="lazy" />
-          <div dir="rtl" className="flex flex-col items-end gap-2">
-            <GlobalQuickLinks />
-            {session && <Badge variant="outline" aria-label="Open profile" role="button" tabIndex={0} onClick={() => navigate('/profile')} onKeyDown={e => {
-            if (e.key === 'Enter' || e.key === ' ') navigate('/profile');
-          }} className="cursor-pointer bg-slate-100 rounded">
-                {displayName}
-              </Badge>}
-          </div>
+         <div className="flex items-center justify-between">
+           <div className="flex flex-col items-start gap-2">
+             <img src="/lovable-uploads/c233c4b5-45bf-486c-96a0-cf5049f9e2b0.png" alt="King Saud University logo" className="h-40 w-auto select-none" loading="lazy" />
+             {session && (
+               <Badge variant="outline" aria-label="Open profile" role="button" tabIndex={0} onClick={() => navigate('/profile')} onKeyDown={e => {
+                 if (e.key === 'Enter' || e.key === ' ') navigate('/profile');
+               }} className="cursor-pointer bg-slate-100 rounded">
+                 {displayName}
+               </Badge>
+             )}
+           </div>
+           <div dir="rtl" className="flex items-center gap-2">
+             <GlobalQuickLinks />
+           </div>
         </div>
       </div>
     </>;
