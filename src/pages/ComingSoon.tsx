@@ -4,7 +4,7 @@ export default function ComingSoonPage() {
       <AppHeader title="Coming Soon" />
       <main className="container mx-auto p-4">
         <div className="rounded-xl border p-6 text-center bg-card">
-          <h2 className="text-xl font-semibold">Feature coming soon</h2>
+          <h2 className="text-xl font-semibold">Coming Soon</h2>
           
         </div>
       </main>
