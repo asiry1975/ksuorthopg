@@ -1,7 +1,8 @@
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import GlobalQuickLinks from "@/components/GlobalQuickLinks";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 export default function AppHeader({
   title
@@ -26,12 +27,17 @@ export default function AppHeader({
          <div className="flex items-center justify-between">
            <div className="flex flex-col items-center gap-0">
              <img src="/lovable-uploads/c233c4b5-45bf-486c-96a0-cf5049f9e2b0.png" alt="King Saud University logo" className="h-40 w-auto select-none block" loading="lazy" />
-             {session && (
+             {session ? (
                <Badge variant="outline" aria-label="Open profile" role="button" tabIndex={0} onClick={() => navigate('/profile')} onKeyDown={e => {
                  if (e.key === 'Enter' || e.key === ' ') navigate('/profile');
                }} className="cursor-pointer bg-slate-100 rounded -mt-6">
                  {displayName}
                </Badge>
+             ) : (
+               <Button variant="outline" aria-label="Sign in" onClick={() => navigate('/auth')} className="-mt-6">
+                 <LogIn className="h-4 w-4" />
+                 <span className="sr-only">Sign in</span>
+               </Button>
              )}
            </div>
            <div dir="rtl" className="flex items-center gap-2">
