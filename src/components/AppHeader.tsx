@@ -29,7 +29,7 @@ export default function AppHeader({
              {session && (
                <Badge variant="outline" aria-label="Open profile" role="button" tabIndex={0} onClick={() => navigate('/profile')} onKeyDown={e => {
                  if (e.key === 'Enter' || e.key === ' ') navigate('/profile');
-               }} className="cursor-pointer bg-slate-100 rounded -mt-2">
+               }} className="cursor-pointer bg-slate-100 rounded -mt-6">
                  {displayName}
                </Badge>
              )}
