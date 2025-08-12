@@ -83,7 +83,7 @@ const { signOut, session, roles } = useAuth();
           <DialogHeader>
             <DialogTitle>Access restricted</DialogTitle>
             <DialogDescription>
-              You do not have permission to access {deniedTarget ?? "this section"}.
+              You do not have permission to access {deniedTarget ?? "this section"}. Please sign in.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end">

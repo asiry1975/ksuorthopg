@@ -46,7 +46,7 @@ export default function AccessGuardLink({
           <DialogHeader>
             <DialogTitle>Access restricted</DialogTitle>
             <DialogDescription>
-              You do not have permission to access {label ?? "this section"}.
+              You do not have permission to access {label ?? "this section"}. Please sign in.
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
